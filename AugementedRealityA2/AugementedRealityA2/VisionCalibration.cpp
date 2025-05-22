@@ -14,6 +14,10 @@ VisionCalibration::VisionCalibration() {
 
 }
 
+/// <summary>
+/// Add a color that w
+/// </summary>
+/// <param name="name"></param>
 void VisionCalibration::addColor(string name) {
 	HSVRange range;
 	range.name = name;
