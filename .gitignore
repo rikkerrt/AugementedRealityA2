@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/c++,visualstudio,opencv
 # Edit at https://www.toptal.com/developers/gitignore?templates=c++,visualstudio,opencv
 
+# json files
+*.json
+
 ### C++ ###
 # Prerequisites
 *.d
