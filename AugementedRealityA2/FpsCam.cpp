@@ -1,6 +1,7 @@
 #include "FpsCam.h"
 #include <GLFW/glfw3.h>
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 FpsCam::FpsCam(GLFWwindow* window)
 {
@@ -23,9 +24,7 @@ void FpsCam::move(float angle, float fac)
 {
 	position.x += (float)cos(rotation.y + glm::radians(angle)) * fac;
 	position.z += (float)sin(rotation.y + glm::radians(angle)) * fac;
-	//position.y += (float)tan(rotation.y + glm::radians(angle)) * fac;
 }
-
 
 void FpsCam::update(GLFWwindow* window)
 {
@@ -50,8 +49,8 @@ void FpsCam::update(GLFWwindow* window)
 		move(90, 0.05f);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		move(-90, 0.05f);
-	/*if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-		move(0, 0.05f);
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+		position.y -= 0.02f;
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-		move(0, -0.05f);*/
+		position.y += 0.02f;
 }
