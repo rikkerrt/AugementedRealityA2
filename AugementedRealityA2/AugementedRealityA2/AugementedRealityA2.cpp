@@ -5,7 +5,7 @@
 using namespace cv;
 using namespace std;
 
-void detectAndDrawLine();
+void detectAndDrawLine(float deviation);
 
 // Init some variables
 VideoCapture webCam(0);
