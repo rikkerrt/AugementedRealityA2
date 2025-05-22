@@ -18,5 +18,13 @@
     <ClCompile Include="AugementedRealityA2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="VisionCalibration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="VisionCalibration.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

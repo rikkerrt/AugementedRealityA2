@@ -1,0 +1,17 @@
+{
+  "Green": {
+    "hueMin": 18,
+    "hueMax": 73,
+    "valueMin": 82,
+    "valueMax": 111,
+    "saturationMin": 31,
+    "saturationMax": 61
+  },
+  "Blue": {
+    "hueMin": 59,
+    "hueMax": 103,
+    "valueMin": 77,
+    "valueMax": 112,
+    "saturationMin": 64,
+    "saturationMax": 125
+  }}
