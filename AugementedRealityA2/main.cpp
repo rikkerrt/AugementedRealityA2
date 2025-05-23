@@ -3,6 +3,11 @@
 #include "tigl.h"
 #include "FpsCam.h"
 #include "ObjModel.h"
+
+#include "GameObject.h"
+#include "CubeComponent.h"
+#include "ModelComponent.h"
+#include "PlayerComponent.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 using tigl::Vertex;
@@ -50,6 +55,9 @@ int main(void)
 }
 
 FpsCam* camera;
+std::list<std::shared_ptr<GameObject>> objects;
+std::shared_ptr<GameObject> player;
+
 
 void init()
 {
@@ -63,16 +71,27 @@ void init()
         });
     camera = new FpsCam(window);
 
+    player = std::make_shared<GameObject>();
+    player->position = glm::vec3(0, 1, 5);
+    player->addComponent(std::make_shared<CubeComponent>(10.0f));
+	player->addComponent(std::make_shared<PlayerComponent>());
+    objects.push_back(player);
+
     tigl::shader->enableTexture(true);
 
-    model = new ObjModel("models/circuit/circuit.obj");
+	auto circuit = std::make_shared<GameObject>();
+	circuit->position = glm::vec3(0, 0, 0);
+	circuit->addComponent(std::make_shared<ModelComponent>("models/circuit/circuit.obj"));
+	objects.push_back(circuit);
+
 }
 
 
 void update()
 {
     camera->update(window);
-
+	for (auto& o : objects)
+		o->update(0.01f);
 }
 
 void draw()
@@ -93,5 +112,7 @@ void draw()
     glEnable(GL_DEPTH_TEST);
 
     glPointSize(10.0f);
-    model->draw();
+
+    for (auto& o : objects)
+        o->draw();
 }

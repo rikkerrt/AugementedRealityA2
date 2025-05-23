@@ -156,15 +156,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="CubeComponent.cpp" />
+    <ClCompile Include="DrawComponent.cpp" />
     <ClCompile Include="FpsCam.cpp" />
+    <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="ObjModel.cpp" />
+    <ClCompile Include="PlayerComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tigl.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="CubeComponent.h" />
+    <ClInclude Include="DrawComponent.h" />
     <ClInclude Include="FpsCam.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="ObjModel.h" />
+    <ClInclude Include="PlayerComponent.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="tigl.h" />
   </ItemGroup>
