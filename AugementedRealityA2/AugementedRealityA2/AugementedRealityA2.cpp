@@ -16,7 +16,7 @@ void main() {
 
 	/// CALIBRATION ///
 
-	//cal.addColor("Green");
+	//cal.addColor("Yellow");
 	//cal.addColor("Blue");
 	//
 	//cal.capurePhoto(webCam);
@@ -136,6 +136,9 @@ void detectAndDrawLine(vector<HSVRange> colors, float angleOffset, float colorDe
 			Point point1 = rotate_point(points[0], origin , angleOffset);
 			Point point2 = rotate_point(points[1], origin, angleOffset);
 
+			Point midPoint((point1.x + point2.x) / 2, (point1.y + point2.y) / 2);
+
+
 			// Draw a line between the two markers
 			line(webCamCapture, point1, point2, Scalar(0, 0, 0), 3, LINE_AA);
 
@@ -144,8 +147,15 @@ void detectAndDrawLine(vector<HSVRange> colors, float angleOffset, float colorDe
 			double deltaY = point1.y - point2.y;
 			double angle = atan2(deltaY, deltaX) * 180.0 / CV_PI;
 			
-			string angleText = "Hoek: " + to_string(angle) + " graden";
-			putText(webCamCapture, angleText, Point(50, 50), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 0), 2);
+			//string angleText = "Hoek: " + to_string(angle) + " graden";
+			//putText(webCamCapture, angleText, Point(50, 50), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 0), 2);
+
+			
+
+			string hightText = "hoogte: " + to_string((midPoint.y/(float)webCamCapture.rows));
+
+			putText(webCamCapture, hightText, Point(50, 50), FONT_HERSHEY_SIMPLEX, 1, Scalar(0, 0, 0), 2);
+
 		}
 
 		// Show the result
