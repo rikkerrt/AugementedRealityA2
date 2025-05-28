@@ -8,6 +8,7 @@
 #include "CubeComponent.h"
 #include "ModelComponent.h"
 #include "KeyboardSteeringComponent.h"
+#include "VisionSteeringComponent.h"
 #include "CarPhysicsComponent.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
@@ -77,7 +78,39 @@ void init()
     player = std::make_shared<GameObject>();
     player->position = glm::vec3(0, 1, 5);
     player->addComponent(std::make_shared<ModelComponent>("models/car/carNoWindow.obj"));
-	player->addComponent(std::make_shared<KeyboardSteeringComponent>());
+
+    //// Keyboard steering wheel
+    player->addComponent(std::make_shared<KeyboardSteeringComponent>());
+
+    // Vision steering wheel
+ /*   VideoCapture webCam(0);
+    VisionCalibration cal;*/
+
+    /// CALIBRATION ///
+
+    //cal.addColor("Yellow");
+    //cal.addColor("Blue");
+    //
+    //cal.capurePhoto(webCam);
+    //cal.calibrate();
+    //cal.save("calibration_settings.json");
+
+    /// LOADING IN ///
+    //cal.load("calibration_settings.json");
+
+    //player->addComponent(std::make_shared<VisionSteeringComponent>(webCam, cal.getColors()));
+
+    //auto baseComponent = player->getComponent<Component>();
+    //auto visionComponent = std::dynamic_pointer_cast<VisionSteeringComponent>(baseComponent);
+
+    //if (visionComponent) {
+    //    visionComponent->setDebugMode(true);
+    //    visionComponent->setMinimalMarkerSize(500);
+    //}
+
+
+    // Add more components
+
 	player->addComponent(std::make_shared<CarPhysicsComponent>());
     objects.push_back(player);
 
