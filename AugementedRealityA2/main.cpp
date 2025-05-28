@@ -88,6 +88,11 @@ void init()
 	circuit->addComponent(std::make_shared<ModelComponent>("models/circuit/circuit.obj"));
 	objects.push_back(circuit);
 
+    auto groundLayer = std::make_shared<GameObject>();
+    groundLayer->position = glm::vec3(0, 0, -0.5);
+    groundLayer->addComponent(std::make_shared<ModelComponent>("models/GroundLayer/GroundLayer.obj"));
+    objects.push_back(groundLayer);
+
 }
 
 
