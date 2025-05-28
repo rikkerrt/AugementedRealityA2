@@ -3,6 +3,12 @@
 #include "tigl.h"
 #include "FpsCam.h"
 #include "ObjModel.h"
+
+#include "GameObject.h"
+#include "CubeComponent.h"
+#include "ModelComponent.h"
+#include "KeyboardSteeringComponent.h"
+#include "CarPhysicsComponent.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 using tigl::Vertex;
@@ -51,6 +57,9 @@ int main(void)
 }
 
 FpsCam* camera;
+std::list<std::shared_ptr<GameObject>> objects;
+std::shared_ptr<GameObject> player;
+
 
 void init()
 {
@@ -65,26 +74,28 @@ void init()
 
     camera = new FpsCam(window);
 
-    tigl::shader->enableLighting(true);
-    tigl::shader->setLightCount(1);
-    tigl::shader->setLightDirectional(0, true);
-    tigl::shader->setLightPosition(0, glm::normalize(glm::vec3(1, 1, 1)));
-    tigl::shader->setLightAmbient(0, glm::vec3(0.5f, 0.5f, 0.5f));
-    tigl::shader->setLightDiffuse(0, glm::vec3(0.5f, 0.5f, 0.5f));
-    tigl::shader->setLightSpecular(0, glm::vec3(1, 1, 1));
-    tigl::shader->setShinyness(0);
+    player = std::make_shared<GameObject>();
+    player->position = glm::vec3(0, 1, 5);
+    player->addComponent(std::make_shared<CubeComponent>(1.0f));
+	player->addComponent(std::make_shared<KeyboardSteeringComponent>());
+	player->addComponent(std::make_shared<CarPhysicsComponent>());
+    objects.push_back(player);
 
     tigl::shader->enableTexture(true);
 
-    model = new ObjModel("models/car/temp/Dababy Convirtible.obj");
-    circuit = new ObjModel("models/circuit/circuit.obj");
-    
+	auto circuit = std::make_shared<GameObject>();
+	circuit->position = glm::vec3(0, 0, 0);
+	circuit->addComponent(std::make_shared<ModelComponent>("models/circuit/circuit.obj"));
+	objects.push_back(circuit);
+
 }
 
 
 void update()
 {
     camera->update(window);
+	for (auto& o : objects)
+		o->update(0.01f);
 }
 
 void draw()
@@ -110,6 +121,7 @@ void draw()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glPointSize(10.0f);
-    model->draw();
-	circuit->draw();
+
+    for (auto& o : objects)
+        o->draw();
 }
