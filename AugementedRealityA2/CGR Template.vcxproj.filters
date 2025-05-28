@@ -48,7 +48,13 @@
     <ClCompile Include="ModelComponent.cpp">
       <Filter>components</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerComponent.cpp">
+    <ClCompile Include="KeyboardSteeringComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="SteeringComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="CarPhysicsComponent.cpp">
       <Filter>components</Filter>
     </ClCompile>
   </ItemGroup>
@@ -80,7 +86,13 @@
     <ClInclude Include="ModelComponent.h">
       <Filter>components</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerComponent.h">
+    <ClInclude Include="KeyboardSteeringComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="SteeringComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="CarPhysicsComponent.h">
       <Filter>components</Filter>
     </ClInclude>
   </ItemGroup>

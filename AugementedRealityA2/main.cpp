@@ -7,7 +7,8 @@
 #include "GameObject.h"
 #include "CubeComponent.h"
 #include "ModelComponent.h"
-#include "PlayerComponent.h"
+#include "KeyboardSteeringComponent.h"
+#include "CarPhysicsComponent.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 using tigl::Vertex;
@@ -73,8 +74,9 @@ void init()
 
     player = std::make_shared<GameObject>();
     player->position = glm::vec3(0, 1, 5);
-    player->addComponent(std::make_shared<CubeComponent>(10.0f));
-	player->addComponent(std::make_shared<PlayerComponent>());
+    player->addComponent(std::make_shared<CubeComponent>(1.0f));
+	player->addComponent(std::make_shared<KeyboardSteeringComponent>());
+	player->addComponent(std::make_shared<CarPhysicsComponent>());
     objects.push_back(player);
 
     tigl::shader->enableTexture(true);
