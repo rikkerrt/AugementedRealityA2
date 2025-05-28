@@ -76,7 +76,7 @@ void init()
 
     player = std::make_shared<GameObject>();
     player->position = glm::vec3(0, 1, 5);
-    player->addComponent(std::make_shared<CubeComponent>(1.0f));
+    player->addComponent(std::make_shared<ModelComponent>("models/car/carNoWindow.obj"));
 	player->addComponent(std::make_shared<KeyboardSteeringComponent>());
 	player->addComponent(std::make_shared<CarPhysicsComponent>());
     objects.push_back(player);
