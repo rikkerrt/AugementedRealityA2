@@ -189,11 +189,15 @@ void ObjModel::draw() {
 	for (ObjGroup* group : groups) {
 		if (group->materialIndex >= 0 && group->materialIndex < (int)materials.size()) {
 			MaterialInfo* mat = materials[group->materialIndex];
+			
 			if (mat->texture) {
 				mat->texture->bind();
+				tigl::shader->setColorMult(glm::vec4(1, 1, 1, mat->transparency));
 			}
+
+			
 			else {
-				tigl::shader->setColorMult(glm::vec4(1, 1, 1, 1));
+				tigl::shader->setColorMult(glm::vec4(1, 1, 1, 0.5));
 			}
 		}
 		
@@ -212,6 +216,7 @@ void ObjModel::draw() {
 					tex = glm::vec2(texcoords[v.texcoord].x, 1.0f - texcoords[v.texcoord].y);
 				}
 				verts.push_back(tigl::Vertex::PTN(pos, tex, norm));
+				//cachen
 			}
 			tigl::drawVertices(GL_TRIANGLES, verts);
 		}
@@ -247,6 +252,7 @@ void ObjModel::loadMaterialFile( const std::string &fileName, const std::string 
 			{
 				materials.push_back(currentMaterial);
 			}
+
 			currentMaterial = new MaterialInfo();
 			currentMaterial->name = params[1];
 		}
@@ -269,13 +275,21 @@ void ObjModel::loadMaterialFile( const std::string &fileName, const std::string 
 		else if (params[0] == "ks")
 		{//TODO, specular color
 		}
+		else if (params[0] == "d")
+		{
+			currentMaterial->transparency = (float)atof(params[1].c_str());
+			
+			if (currentMaterial->transparency != 1) {
+				std::cout << currentMaterial->transparency << std::endl;
+			}
+
+		}
 		else if (
 			params[0] == "illum" || 
 			params[0] == "map_bump" || 
 			params[0] == "map_ke" || 
 			params[0] == "map_ka" ||
 			params[0] == "map_d" ||
-			params[0] == "d" ||
 			params[0] == "ke" ||
 			params[0] == "ns" ||
 			params[0] == "ni" ||
@@ -287,8 +301,9 @@ void ObjModel::loadMaterialFile( const std::string &fileName, const std::string 
 			//these values are usually not used for rendering at this time, so ignore them
 		}
 		else
-			std::cout<<"Didn't parse "<<params[0]<<" in material file"<<std::endl;
+			std::cout<<" Didn't parse "<<params[0]<<" in material file"<<std::endl;
 	}
+
 	if(currentMaterial != NULL)
 		materials.push_back(currentMaterial);
 

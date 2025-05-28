@@ -13,6 +13,7 @@ using tigl::Vertex;
 
 GLFWwindow* window;
 ObjModel* model;
+ObjModel* circuit;
 
 void init();
 void update();
@@ -61,18 +62,29 @@ void init()
             if (key == GLFW_KEY_ESCAPE)
                 glfwSetWindowShouldClose(window, true);
         });
+
     camera = new FpsCam(window);
+
+    tigl::shader->enableLighting(true);
+    tigl::shader->setLightCount(1);
+    tigl::shader->setLightDirectional(0, true);
+    tigl::shader->setLightPosition(0, glm::normalize(glm::vec3(1, 1, 1)));
+    tigl::shader->setLightAmbient(0, glm::vec3(0.5f, 0.5f, 0.5f));
+    tigl::shader->setLightDiffuse(0, glm::vec3(0.5f, 0.5f, 0.5f));
+    tigl::shader->setLightSpecular(0, glm::vec3(1, 1, 1));
+    tigl::shader->setShinyness(0);
 
     tigl::shader->enableTexture(true);
 
-    model = new ObjModel("models/circuit/circuit.obj");
+    model = new ObjModel("models/car/temp/Dababy Convirtible.obj");
+    circuit = new ObjModel("models/circuit/circuit.obj");
+    
 }
 
 
 void update()
 {
     camera->update(window);
-
 }
 
 void draw()
@@ -90,8 +102,14 @@ void draw()
 
     tigl::shader->enableColor(true);
 
+
+
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glPointSize(10.0f);
     model->draw();
+	circuit->draw();
 }

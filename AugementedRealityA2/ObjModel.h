@@ -33,6 +33,7 @@ private:
 		MaterialInfo();
 		std::string name;
 		Texture* texture;
+		float transparency;
 	};
 
 	class ObjGroup
@@ -41,6 +42,7 @@ private:
 		std::string name;
 		int materialIndex;
 		std::list<Face> faces;
+		//cache
 	};
 
 
