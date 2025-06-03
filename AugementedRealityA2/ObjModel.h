@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-
+#include "tigl.h"
 #include <string>
 #include <vector>
 #include <list>

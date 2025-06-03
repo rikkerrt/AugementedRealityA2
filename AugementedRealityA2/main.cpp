@@ -5,6 +5,7 @@
 #include "ObjModel.h"
 
 #include "GameObject.h"
+#include "SceneObject.h"
 #include "CubeComponent.h"
 #include "ModelComponent.h"
 #include "KeyboardSteeringComponent.h"
@@ -20,10 +21,12 @@ using tigl::Vertex;
 GLFWwindow* window;
 ObjModel* model;
 ObjModel* circuit;
+SceneObject scene;
 
 void init();
 void update();
 void draw();
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 int main(void)
 {
@@ -57,45 +60,66 @@ int main(void)
 }
 
 FpsCam* camera;
-std::list<std::shared_ptr<GameObject>> objects;
-std::shared_ptr<GameObject> player;
-
 
 void init()
 {
 
     int value[10];
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, value);
-    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-        {
-            if (key == GLFW_KEY_ESCAPE)
-                glfwSetWindowShouldClose(window, true);
-        });
+    glfwSetKeyCallback(window, keyCallback);
 
     camera = new FpsCam(window);
 
-    player = std::make_shared<GameObject>();
-    player->position = glm::vec3(0, 1, 5);
+    tigl::shader->enableTexture(true);
+
+    scene = SceneObject();
+
+    /*auto player = std::make_shared<GameObject>();
+    player->position = glm::vec3(0, 0, 5);
     player->addComponent(std::make_shared<ModelComponent>("models/car/carNoWindow.obj"));
 	player->addComponent(std::make_shared<KeyboardSteeringComponent>());
 	player->addComponent(std::make_shared<CarPhysicsComponent>());
-    objects.push_back(player);
-
-    tigl::shader->enableTexture(true);
+    scene.addGameObject(player);
 
 	auto circuit = std::make_shared<GameObject>();
 	circuit->position = glm::vec3(0, 0, 0);
 	circuit->addComponent(std::make_shared<ModelComponent>("models/circuit/circuit.obj"));
-	objects.push_back(circuit);
+    scene.addGameObject(circuit);*/
 
+	auto car = std::make_shared<GameObject>();
+	car->position = glm::vec3(0, 0, 0);
+	car->addComponent(std::make_shared<CubeComponent>(100.0f));
+	scene.addGameObject(car);
+
+	auto straight1 = std::make_shared<GameObject>();
+	straight1->position = glm::vec3(0, 0, 0);
+	straight1->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
+	scene.addRoadObject(straight1, 1);
+}
+
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+	if (key == GLFW_KEY_V && action == GLFW_PRESS) {
+		auto straight3 = std::make_shared<GameObject>();
+		straight3->position = glm::vec3(0, 0, 0);
+		straight3->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
+		scene.addRoadObject(straight3, 1);
+	}
+	if (key == GLFW_KEY_B && action == GLFW_PRESS) {
+		auto straight2 = std::make_shared<GameObject>();
+		straight2->position = glm::vec3(0, 0, 0);
+		straight2->addComponent(std::make_shared<ModelComponent>("models/test/corner/Curve.obj"));
+		scene.addRoadObject(straight2, 2);
+	}
 }
 
 
 void update()
 {
     camera->update(window);
-	for (auto& o : objects)
-		o->update(0.01f);
+	scene.update(0.01f);
 }
 
 void draw()
@@ -113,15 +137,10 @@ void draw()
 
     tigl::shader->enableColor(true);
 
-
-
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glPointSize(10.0f);
 
-    for (auto& o : objects)
-        o->draw();
+	scene.draw();
 }

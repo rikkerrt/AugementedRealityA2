@@ -2,16 +2,20 @@
 
 #include <list>
 #include <glm/glm.hpp>
-#include <list>
 #include <memory>
+#include <vector>
+#include "tigl.h"
 
+class SceneObject;
 class Component;
 class DrawComponent;
-class BoundingBoxComponent;
+class PhysicsComponent;
 
 class GameObject
 {
 	std::shared_ptr<DrawComponent> drawComponent;
+	std::shared_ptr<PhysicsComponent> physicsComponent;
+	SceneObject* sceneObject;
 
 	std::list<std::shared_ptr<Component>> components;
 public:
@@ -27,8 +31,9 @@ public:
 	void addComponent(std::shared_ptr<Component> component);
 	std::list<std::shared_ptr<Component>> getComponents();
 	void update(float elapsedTime);
-	void draw(const glm::mat4 & = glm::mat4(1.0f));
+	void draw(const glm::mat4& parentMatrix);
 
+	inline void setSceneObject(SceneObject* sceneObject) { this->sceneObject = sceneObject; }
 
 	template<class T>
 	std::shared_ptr<T> getComponent()

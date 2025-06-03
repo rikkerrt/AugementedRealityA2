@@ -5,7 +5,7 @@
 extern GLFWwindow* window;
 
 KeyboardSteeringComponent::KeyboardSteeringComponent() {
-	speed = 10.0f;
+	speed = 0.0f;
 	angle = 0.0f;
 }
 
