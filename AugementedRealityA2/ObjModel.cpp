@@ -175,6 +175,10 @@ ObjModel::ObjModel(const std::string &fileName)
 		}
 	}
 	groups.push_back(currentGroup);
+
+	buildVertexBuffer();
+	buildMinimalBounds();
+	buildMaximumBound();
 }
 
 
@@ -185,42 +189,26 @@ ObjModel::~ObjModel(void)
 
 
 
-void ObjModel::draw() {
-	for (ObjGroup* group : groups) {
-		if (group->materialIndex >= 0 && group->materialIndex < (int)materials.size()) {
-			MaterialInfo* mat = materials[group->materialIndex];
-			
+void ObjModel::draw()
+{
+	if (!groups.empty())
+	{
+		int matIdx = groups[0]->materialIndex;
+		if (matIdx >= 0 && matIdx < (int)materials.size())
+		{
+			MaterialInfo* mat = materials[matIdx];
 			if (mat->texture) {
 				mat->texture->bind();
 				tigl::shader->setColorMult(glm::vec4(1, 1, 1, mat->transparency));
 			}
-
-			
 			else {
 				tigl::shader->setColorMult(glm::vec4(1, 1, 1, 0.5));
 			}
 		}
-		
-		for (auto& face : group->faces) {
-			std::vector<tigl::Vertex> verts;
-			for (auto& v : face.vertices) {
-				glm::vec3 pos(0.0f), norm(0.0f);
-				glm::vec2 tex(0.0f);
-				if (v.position >= 0 && v.position < (int)vertices.size()) {
-					pos = vertices[v.position];
-				}
-				if (v.normal >= 0 && v.normal < (int)normals.size()) {
-					norm = normals[v.normal];
-				}
-				if (v.texcoord >= 0 && v.texcoord < (int)texcoords.size()) {
-					tex = glm::vec2(texcoords[v.texcoord].x, 1.0f - texcoords[v.texcoord].y);
-				}
-				verts.push_back(tigl::Vertex::PTN(pos, tex, norm));
-				//cachen
-			}
-			tigl::drawVertices(GL_TRIANGLES, verts);
-		}
 	}
+
+	if (vbo)
+		tigl::drawVertices(GL_TRIANGLES, vbo);
 }
 
 void ObjModel::loadMaterialFile( const std::string &fileName, const std::string &dirName )
@@ -314,4 +302,63 @@ ObjModel::MaterialInfo::MaterialInfo()
 	texture = NULL;
 }
 
+void ObjModel::buildVertexBuffer()
+{
+	// Clear any existing data
+	vboVertices.clear();
+
+	// Generate VBO data
+	for (ObjGroup* group : groups) {
+		for (auto& face : group->faces) {
+			for (auto& v : face.vertices) {
+				glm::vec3 pos(0.0f), norm(0.0f);
+				glm::vec2 tex(0.0f);
+
+				if (v.position >= 0 && v.position < (int)vertices.size())
+					pos = vertices[v.position];
+				if (v.normal >= 0 && v.normal < (int)normals.size())
+					norm = normals[v.normal];
+				if (v.texcoord >= 0 && v.texcoord < (int)texcoords.size())
+					tex = glm::vec2(texcoords[v.texcoord].x, 1.0f - texcoords[v.texcoord].y);
+
+				vboVertices.push_back(tigl::Vertex::PTN(pos, tex, norm));
+			}
+		}
+	}
+
+	// Create the VBO
+	if (vbo)
+		delete vbo;
+	vbo = tigl::createVbo(vboVertices);
+}
+
+void ObjModel::buildMinimalBounds() {
+	minimalBounds = vertices[0];
+	for (const auto& v : vertices)
+	{
+		minimalBounds.x = std::min(minimalBounds.x, v.x);
+		minimalBounds.y = std::min(minimalBounds.y, v.y);
+		minimalBounds.z = std::min(minimalBounds.z, v.z);
+	}
+}
+
+void ObjModel::buildMaximumBound() {
+	maximumBounds = vertices[0];
+	for (const auto& v : vertices)
+	{
+		maximumBounds.x = std::max(maximumBounds.x, v.x);
+		maximumBounds.y = std::max(maximumBounds.y, v.y);
+		maximumBounds.z = std::max(maximumBounds.z, v.z);
+	}
+}
+
+glm::vec3 ObjModel::getMinimumBounds()
+{
+	return minimalBounds;
+}
+
+glm::vec3 ObjModel::getMaximumBounds()
+{
+	return maximumBounds;
+}
 
