@@ -64,7 +64,6 @@ std::shared_ptr<GameObject> player;
 
 void init()
 {
-
     int value[10];
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, value);
     glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -73,26 +72,26 @@ void init()
                 glfwSetWindowShouldClose(window, true);
         });
 
-    camera = new FpsCam(window);
+    camera = new FpsCam(window, glm::vec3(0, -1, -1));
 
     player = std::make_shared<GameObject>();
-    player->position = glm::vec3(0, 1, 5);
+    player->position = glm::vec3(0, 0, 5);
     player->addComponent(std::make_shared<ModelComponent>("models/car/carNoWindow.obj"));
 
     //// Keyboard steering wheel
     player->addComponent(std::make_shared<KeyboardSteeringComponent>());
 
     // Vision steering wheel
- /*   VideoCapture webCam(0);
-    VisionCalibration cal;*/
+	/*VideoCapture webCam(0);
+    VisionCalibration cal;
 
     /// CALIBRATION ///
 
-    //cal.addColor("Yellow");
-    //cal.addColor("Blue");
-    //
-    //cal.capurePhoto(webCam);
-    //cal.calibrate();
+    cal.addColor("Yellow");
+    cal.addColor("Blue");
+    
+    cal.capurePhoto(webCam);
+    cal.calibrate();*/
     //cal.save("calibration_settings.json");
 
     /// LOADING IN ///
@@ -119,16 +118,16 @@ void init()
 	auto circuit = std::make_shared<GameObject>();
 	circuit->position = glm::vec3(0, 0, 0);
 	circuit->addComponent(std::make_shared<ModelComponent>("models/circuit/circuit.obj"));
-	objects.push_back(circuit);
-
+    objects.push_back(circuit);
 }
 
 
 void update()
 {
-    camera->update(window);
+    camera->update(window, player->position, player->rotation);
 	for (auto& o : objects)
 		o->update(0.01f);
+
 }
 
 void draw()

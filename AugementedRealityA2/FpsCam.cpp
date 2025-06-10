@@ -3,11 +3,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <iostream>
 
-FpsCam::FpsCam(GLFWwindow* window)
+FpsCam::FpsCam(GLFWwindow* window, glm::vec3 position)
 {
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 	if (glfwRawMouseMotionSupported())
 		glfwSetInputMode(window, GLFW_RAW_MOUSE_MOTION, GLFW_TRUE);
+
+	this->position = position;
 }
 
 
@@ -26,7 +28,7 @@ void FpsCam::move(float angle, float fac)
 	position.z += (float)sin(rotation.y + glm::radians(angle)) * fac;
 }
 
-void FpsCam::update(GLFWwindow* window)
+void FpsCam::update(GLFWwindow* window, glm::vec3 carPosition, glm::vec3 carRotation)
 {
 	double x, y;
 	glfwGetCursorPos(window, &x, &y);
@@ -40,6 +42,11 @@ void FpsCam::update(GLFWwindow* window)
 	lastX = x;
 	lastY = y;
 
+	position.x = -carPosition.x;
+	position.y = carPosition.y -2;
+	position.z = -carPosition.z;
+
+	rotation.y = -carRotation.y;
 
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
 		move(0, 0.1f);
