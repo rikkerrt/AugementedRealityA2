@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="components">
+      <UniqueIdentifier>{e19e7958-c4f4-4bf2-a08e-ea4070142c11}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tigl.cpp">
@@ -31,6 +34,34 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TextBox.cpp">
+    <ClCompile Include="GameObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CubeComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="Component.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="DrawComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="ModelComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyboardSteeringComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="SteeringComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="CarPhysicsComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="VisionSteeringComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
+    <ClCompile Include="VisionCalibration.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -48,6 +79,34 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TextBox.h">
+    <ClInclude Include="GameObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CubeComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="Component.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="DrawComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="ModelComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="KeyboardSteeringComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="SteeringComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="CarPhysicsComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="VisionSteeringComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="VisionCalibration.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
