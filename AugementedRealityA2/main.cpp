@@ -31,7 +31,7 @@ int main(void)
     if (!glfwInit())
         throw "Could not initialize glwf";
     int count;
-    window = glfwCreateWindow(1000, 800, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(1280, 720, "Hello World", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -79,10 +79,10 @@ void init()
     player->addComponent(std::make_shared<ModelComponent>("models/car/carNoWindow.obj"));
 
     //// Keyboard steering wheel
-    player->addComponent(std::make_shared<KeyboardSteeringComponent>());
+    //player->addComponent(std::make_shared<KeyboardSteeringComponent>());
 
     // Vision steering wheel
-	/*VideoCapture webCam(0);
+	VideoCapture webCam(0);
     VisionCalibration cal;
 
     /// CALIBRATION ///
@@ -91,21 +91,21 @@ void init()
     cal.addColor("Blue");
     
     cal.capurePhoto(webCam);
-    cal.calibrate();*/
-    //cal.save("calibration_settings.json");
+    cal.calibrate();
+    cal.save("calibration_settings.json");
 
     /// LOADING IN ///
-    //cal.load("calibration_settings.json");
+    cal.load("calibration_settings.json");
 
-    //player->addComponent(std::make_shared<VisionSteeringComponent>(webCam, cal.getColors()));
+    player->addComponent(std::make_shared<VisionSteeringComponent>(webCam, cal.getColors()));
 
-    //auto baseComponent = player->getComponent<Component>();
-    //auto visionComponent = std::dynamic_pointer_cast<VisionSteeringComponent>(baseComponent);
+    auto baseComponent = player->getComponent<Component>();
+    auto visionComponent = std::dynamic_pointer_cast<VisionSteeringComponent>(baseComponent);
 
-    //if (visionComponent) {
-    //    visionComponent->setDebugMode(true);
-    //    visionComponent->setMinimalMarkerSize(500);
-    //}
+    if (visionComponent) {
+        visionComponent->setDebugMode(true);
+        visionComponent->setMinimalMarkerSize(50);
+    }
 
 
     // Add more components
@@ -124,11 +124,17 @@ void init()
 
 void update()
 {
-    camera->update(window, player->position, player->rotation);
-	for (auto& o : objects)
-		o->update(0.01f);
+    static double lastTime = glfwGetTime();
+    double currentTime = glfwGetTime();
 
+    float elapsedTime = static_cast<float>(currentTime - lastTime);
+    lastTime = currentTime;
+
+    camera->update(window, player->position, player->rotation);
+    for (auto& o : objects)
+        o->update(elapsedTime);
 }
+
 
 void draw()
 {

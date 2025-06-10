@@ -13,18 +13,18 @@ CarPhysicsComponent::~CarPhysicsComponent()
 
 void CarPhysicsComponent::update(float elapsedTime)
 {
-	float speed = gameObject->getComponent<SteeringComponent>()->height;
-	float targetAngle = glm::radians(gameObject->getComponent<SteeringComponent>()->angle);
-	//float deltaAngle = targetAngle - gameObject->rotation.y;
+    // Get desired speed
+    float speed = gameObject->getComponent<SteeringComponent>()->height * 20;
 
-	//steeringAngle += deltaAngle * elapsedTime * 5; // TODO magic 5
-	//gameObject->rotation.y += steeringAngle * elapsedTime * 5; // TODO magic 5
+    // Calculate target steering angle
+    float targetAngle = glm::radians(gameObject->getComponent<SteeringComponent>()->angle);
+    steeringAngle += (targetAngle - steeringAngle) * elapsedTime * 3.0f; // Gradual turning
+    gameObject->rotation.y += steeringAngle * elapsedTime * 2.0f; // Smooth rotation
 
-	//gameObject->position.x += sin(gameObject->rotation.y) * speed; // TODO += - speed is messy
-	//gameObject->position.z += cos(gameObject->rotation.y) * speed;;
+    // Movement based on rotation
+    gameObject->position.x -= sin(gameObject->rotation.y) * speed * elapsedTime;
+    gameObject->position.z -= cos(gameObject->rotation.y) * speed * elapsedTime;
 
-	gameObject->position.x += -(float)sin(targetAngle) * speed; // TODO += - speed is messy
-	gameObject->position.z += -(float)cos(targetAngle) * speed;
 
-	gameObject->rotation.y += targetAngle;
 }
+
