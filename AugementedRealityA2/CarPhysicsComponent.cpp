@@ -3,8 +3,9 @@
 #include "SteeringComponent.h"
 #include <iostream>
 
-CarPhysicsComponent::CarPhysicsComponent()
+CarPhysicsComponent::CarPhysicsComponent(float speed)
 {
+    this->speed = speed;
 }
 
 CarPhysicsComponent::~CarPhysicsComponent()
@@ -14,7 +15,7 @@ CarPhysicsComponent::~CarPhysicsComponent()
 void CarPhysicsComponent::update(float elapsedTime)
 {
     // Get desired speed
-    float speed = gameObject->getComponent<SteeringComponent>()->height * 20;
+    float currentSpeed = gameObject->getComponent<SteeringComponent>()->height * this->speed;
 
     // Calculate target steering angle
     float targetAngle = glm::radians(gameObject->getComponent<SteeringComponent>()->angle);
@@ -22,8 +23,8 @@ void CarPhysicsComponent::update(float elapsedTime)
     gameObject->rotation.y += steeringAngle * elapsedTime * 2.0f; // Smooth rotation
 
     // Movement based on rotation
-    gameObject->position.x -= sin(gameObject->rotation.y) * speed * elapsedTime;
-    gameObject->position.z -= cos(gameObject->rotation.y) * speed * elapsedTime;
+    gameObject->position.x -= sin(gameObject->rotation.y) * currentSpeed * elapsedTime;
+    gameObject->position.z -= cos(gameObject->rotation.y) * currentSpeed * elapsedTime;
 
 
 }
