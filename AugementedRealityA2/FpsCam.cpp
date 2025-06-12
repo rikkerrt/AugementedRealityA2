@@ -42,20 +42,20 @@ void FpsCam::update(GLFWwindow* window, glm::vec3 carPosition, glm::vec3 carRota
 	lastX = x;
 	lastY = y;
 
-	position.x = -carPosition.x;
+	/*position.x = -carPosition.x;
 	position.y = carPosition.y -2;
 	position.z = -carPosition.z;
 
-	rotation.y = -carRotation.y;
+	rotation.y = -carRotation.y;*/
 
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		move(0, 0.1f);
+		move(0, 0.5f);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		move(180, 0.1f);
+		move(180, 0.5f);
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		move(90, 0.1f);
+		move(90, 0.5f);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-		move(-90, 0.1f);
+		move(-90, 0.5f);
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
 		position.y -= 0.02f;
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)

@@ -26,23 +26,25 @@ using tigl::Vertex;
 
 GLFWwindow* window;
 FpsCam* camera;
-TextBox* textBox;
+TextBox* timeTextBox;
 TextBox* textBox2;
+TextBox* textBox3;
 ObjModel* circuit;
 
 int windowHeight;
 int windowWidth;
 
-glm::vec3 startLine1(-6, 0, 0);
-glm::vec3 startLine2(6, 0, 0);
-glm::vec3 checkPoint1l(60, 0, 44);
-glm::vec3 checkPoint1r(72, 0, 44);
-glm::vec3 checkPoint2l(95, 0, 30);
-glm::vec3 checkPoint2r(107, 0, 30);
+glm::vec3 startLine1(-6, 0, -1);
+glm::vec3 startLine2(6, 0, 1);
+glm::vec3 checkPoint1l(59, 0, 84);
+glm::vec3 checkPoint1r(72, 0, 86);
+glm::vec3 checkPoint2l(95, 0, 0);
+glm::vec3 checkPoint2r(107, 0, 2);
 
 bool crossedCheckpoint1 = false;
 bool crossedCheckpoint2 = false;
-int startedLapsCount = 0;
+int completedLapsCount = 0;
+int maxLaps = 3;
 
 std::chrono::steady_clock::time_point startTime;
 bool timing = false;
@@ -95,7 +97,7 @@ void init()
                 glfwSetWindowShouldClose(window, true);
         });
 
-    camera = new FpsCam(window, glm::vec3(0, -1, -1));
+    camera = new FpsCam(window, glm::vec3(0, -1, -10));
 
     player = std::make_shared<GameObject>();
     player->position = glm::vec3(0, 0, 20);
@@ -142,11 +144,14 @@ void init()
 	circuit->addComponent(std::make_shared<ModelComponent>("models/circuit/circuit.obj"));
     objects.push_back(circuit);
 
-    textBox = new TextBox("Hello", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80));
-	textBox->loadFont("fonts/Opensans.ttf");
+    timeTextBox = new TextBox("Hello", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80));
+	timeTextBox->loadFont("fonts/Opensans.ttf");
 
     textBox2 = new TextBox("Hello", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80));
     textBox2->loadFont("fonts/Opensans.ttf");
+
+    textBox3 = new TextBox("Hello", glm::vec2(windowHeight -1000, 10), glm::vec2(300, 80));
+    textBox3->loadFont("fonts/Opensans.ttf");
 }
 
 void update()
@@ -154,59 +159,49 @@ void update()
     static double lastTime = glfwGetTime();
     double currentTime = glfwGetTime();
     camera->update(window, player->position, player->rotation);
-    textBox2->setText(std::to_string(player->position.x) + ", " + std::to_string(player->position.z));
-   /* if (player->position.x == startLine.x && player->position.z == startLine.z)
-    {
-        textBox->setText("You are at the start line!");
-        startTime = std::chrono::steady_clock::now();
-        timing = true;
-    }*/
-	if (player->position.x >= startLine1.x && player->position.x <= startLine2.x &&
-		player->position.z == startLine1.z && player->position.z == startLine2.z)
+    textBox3->setText(std::to_string(camera->position.x) + ", " + std::to_string(camera->position.z));
+
+	if (camera->position.x >= startLine1.x && camera->position.x <= startLine2.x &&
+        camera->position.z >= startLine1.z && camera->position.z <= startLine2.z)
 	{
-		textBox->setText("You are at the start line!");
+		textBox2->setText("You are at the start line!");
         startTime = std::chrono::steady_clock::now();
         timing = true;
 
-		crossedCheckpoint1 = false;
-		crossedCheckpoint2 = false;
-
-        if (startedLapsCount == 3)
-        {
-            //stop game
-        }
         if (crossedCheckpoint1 && crossedCheckpoint2)
         {
-            startedLapsCount++;
-            textBox2->setText("You have completed " + std::to_string(startedLapsCount) + " laps!");
+            completedLapsCount++;
+            textBox2->setText("You have completed " + std::to_string(completedLapsCount) + " laps!");
         }
+        if (completedLapsCount == maxLaps)
+        {
+            //stop game
+            timing = false;
+            completedLapsCount = 0;
+        }
+
+        crossedCheckpoint1 = false;
+        crossedCheckpoint2 = false;
 	}
     if (timing)
     {
         std::chrono::duration<double> elapsedTime = std::chrono::steady_clock::now() - startTime;
         std::ostringstream stream;
         stream << std::fixed << std::setprecision(3) << elapsedTime.count();
-        //textBox->setText("Time elapsed: " + stream.str() + " seconds");
+        timeTextBox->setText("Time elapsed: " + stream.str() + " seconds");
     }
-	if (player->position.x >= checkPoint1l.x && player->position.x <= checkPoint1r.x &&
-		player->position.z == checkPoint1l.z && player->position.z == checkPoint1r.z)
+	if (camera->position.x >= checkPoint1l.x && camera->position.x <= checkPoint1r.x &&
+        camera->position.z >= checkPoint1l.z && camera->position.z <= checkPoint1r.z)
 	{
-		textBox->setText("You are at checkpoint 1!");
+		textBox2->setText("You are at checkpoint 1!");
         crossedCheckpoint1 = true;
 	}
-	if (player->position.x >= checkPoint2l.x && player->position.x <= checkPoint2r.x &&
-		player->position.z == checkPoint2l.z && player->position.z == checkPoint2r.z)
+	if (camera->position.x >= checkPoint2l.x && camera->position.x <= checkPoint2r.x &&
+        camera->position.z >= checkPoint2l.z && camera->position.z <= checkPoint2r.z)
 	{
-		textBox->setText("You are at checkpoint 2!");
+		textBox2->setText("You are at checkpoint 2!");
         crossedCheckpoint2 = true;
 	}
-	// Check if player is at the end line
-	glm::vec3 endLine(0, 0, 100); // Example end line position
-	/*if (player->position.x == endLine.x && player->position.z == endLine.z)
-	{
-		textBox->setText("You are at the end line!");
-		timing = false;
-	}*/
 
     for (auto& o : objects)
     {
@@ -251,8 +246,9 @@ void draw()
     glm::mat4 orthoProjection = glm::ortho(0.0f, (float)viewport[2], (float)viewport[3], 0.0f);
     tigl::shader->setProjectionMatrix(orthoProjection);
 
-    textBox->draw();
+    timeTextBox->draw();
 	textBox2->draw();
+	textBox3->draw();
 }
 
 
