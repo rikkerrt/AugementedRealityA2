@@ -111,12 +111,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;GLEW_STATIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)lib\glm;$(SolutionDir)lib\glew-2.1.0\include;$(SolutionDir)lib\glfw-3.3.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)lib\freetype-windows-binaries-master\include;$(SolutionDir)lib\glm;$(SolutionDir)lib\glew-2.1.0\include;$(SolutionDir)lib\glfw-3.3.8\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)lib\glfw-3.3.8\$(Platform);$(SolutionDir)lib\glew-2.1.0\lib\Release\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)lib\freetype-windows-binaries-master\release dll\$(Platform);$(SolutionDir)lib\glfw-3.3.8\$(Platform);$(SolutionDir)lib\glew-2.1.0\lib\Release\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -170,6 +171,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="ObjModel.cpp" />
+    <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="SteeringComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tigl.cpp" />
@@ -186,6 +188,7 @@
     <ClInclude Include="KeyboardSteeringComponent.h" />
     <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="ObjModel.h" />
+    <ClInclude Include="TextBox.h" />
     <ClInclude Include="SteeringComponent.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="tigl.h" />
