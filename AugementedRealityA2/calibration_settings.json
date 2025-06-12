@@ -1,17 +1,17 @@
 {
   "Yellow": {
-    "hueMin": 16,
-    "hueMax": 39,
-    "valueMin": 166,
-    "valueMax": 190,
-    "saturationMin": 127,
-    "saturationMax": 182
+    "hueMin": 8,
+    "hueMax": 22,
+    "valueMin": 69,
+    "valueMax": 110,
+    "saturationMin": 158,
+    "saturationMax": 183
   },
   "Blue": {
-    "hueMin": 98,
-    "hueMax": 112,
-    "valueMin": 126,
-    "valueMax": 160,
-    "saturationMin": 106,
-    "saturationMax": 183
+    "hueMin": 89,
+    "hueMax": 179,
+    "valueMin": 0,
+    "valueMax": 47,
+    "saturationMin": 8,
+    "saturationMax": 120
   }}
