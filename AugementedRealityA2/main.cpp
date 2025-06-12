@@ -23,9 +23,6 @@
 #include "CarPhysicsComponent.h"
 #include "ChildComponent.h"
 
-
-#define STB_TRUETYPE_IMPLEMENTATION
-#include "stb_truetype.h"
 #include "TextBox.h"
 
 using tigl::Vertex;
@@ -204,7 +201,11 @@ void draw()
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
     float aspect = viewport[2] / (float)viewport[3];
-
+    
+    tigl::shader->setProjectionMatrix(cameraManager->getProjectionMatrix(aspect));
+    tigl::shader->setViewMatrix(cameraManager->getViewMatrix());
+    tigl::shader->setModelMatrix(glm::mat4(1.0f));
+    
     for (auto& o : objects)
         o->draw();
 
