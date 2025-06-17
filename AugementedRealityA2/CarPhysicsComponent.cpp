@@ -1,6 +1,7 @@
 #include "CarPhysicsComponent.h"
 #include "GameObject.h"
 #include "SteeringComponent.h"
+#include "SceneObject.h"
 #include <iostream>
 
 CarPhysicsComponent::CarPhysicsComponent()
@@ -20,4 +21,6 @@ void CarPhysicsComponent::update(float elapsedTime)
 	gameObject->position.z += (float)sin(glm::radians(angle)) * speed;
 	// angle draaien fixen door de rotatie van de cubes hetzelfde te maken als de angle waar hij naartoe rijd
 	gameObject->rotation.y = (angle / 90) * -1;
+
+	std::list<std::shared_ptr<GameObject>> physicsObjects = gameObject->sceneObject->getPhysicsObjects();
 }

@@ -86,15 +86,25 @@ void init()
 	circuit->addComponent(std::make_shared<ModelComponent>("models/circuit/circuit.obj"));
     scene.addGameObject(circuit);*/
 
-	auto car = std::make_shared<GameObject>();
-	car->position = glm::vec3(0, 0, 0);
-	car->addComponent(std::make_shared<CubeComponent>(100.0f));
-	scene.addGameObject(car);
+    auto groundLayer = std::make_shared<GameObject>();
+    groundLayer->position = glm::vec3(0, -0.2, 0);
+    groundLayer->addComponent(std::make_shared<ModelComponent>("models/test/GroundLayer/GroundLayer.obj"));
+    scene.addGameObject(groundLayer);
+
+    auto straight2 = std::make_shared<GameObject>();
+    straight2->position = glm::vec3(0, 0, 0);
+    straight2->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
+    scene.addRoadObject(straight2, 1);
 
 	auto straight1 = std::make_shared<GameObject>();
 	straight1->position = glm::vec3(0, 0, 0);
-	straight1->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
-	scene.addRoadObject(straight1, 1);
+	straight1->addComponent(std::make_shared<ModelComponent>("models/test/timing/StartFinish.obj"));
+	scene.addRoadObject(straight1, 4);
+
+	auto prop = std::make_shared<GameObject>();
+	prop->position = glm::vec3(0, 0, 0);
+	prop->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree1.obj"));
+	scene.addGameObject(prop);
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -104,14 +114,21 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	if (key == GLFW_KEY_V && action == GLFW_PRESS) {
 		auto straight3 = std::make_shared<GameObject>();
 		straight3->position = glm::vec3(0, 0, 0);
-		straight3->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
+		straight3->addComponent(std::make_shared<ModelComponent>("models/test/straight/curve.obj"));
 		scene.addRoadObject(straight3, 1);
 	}
 	if (key == GLFW_KEY_B && action == GLFW_PRESS) {
 		auto straight2 = std::make_shared<GameObject>();
 		straight2->position = glm::vec3(0, 0, 0);
-		straight2->addComponent(std::make_shared<ModelComponent>("models/test/corner/Curve.obj"));
+		straight2->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveRight.obj"));
 		scene.addRoadObject(straight2, 2);
+	}
+
+	if (key == GLFW_KEY_C && action == GLFW_PRESS) {
+		auto straight4 = std::make_shared<GameObject>();
+		straight4->position = glm::vec3(0, 0, 0);
+		straight4->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveLeft.obj"));
+		scene.addRoadObject(straight4, 3);
 	}
 }
 

@@ -1,10 +1,10 @@
 #include "PhysicsComponent.h"
 
-CarPhysicsComponent::CarPhysicsComponent(float inRadius)
+PhysicsComponent::PhysicsComponent(float inRadius)
 {
 	radius = inRadius;
 }
 
-CarPhysicsComponent::~CarPhysicsComponent()
+PhysicsComponent::~PhysicsComponent()
 {
 }

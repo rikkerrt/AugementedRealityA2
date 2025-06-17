@@ -1,5 +1,6 @@
 #include "GameObject.h"
 #include "DrawComponent.h"
+#include "PhysicsComponent.h"
 #include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -19,9 +20,6 @@ void GameObject::addComponent(std::shared_ptr<Component> component)
 
 	if (drawComponent == nullptr) {
 		drawComponent = std::dynamic_pointer_cast<DrawComponent>(component);
-	}
-	if (physicsComponent == nullptr) {
-		physicsComponent = std::dynamic_pointer_cast<PhysicsComponent>(component);
 	}
 }
 

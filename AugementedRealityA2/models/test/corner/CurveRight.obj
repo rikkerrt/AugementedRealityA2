@@ -1,6 +1,6 @@
 # Blender 4.4.3
 # www.blender.org
-mtllib Curve.mtl
+mtllib CurveRight.mtl
 o Road_6
 v -5.054372 0.000003 -0.002041
 v 5.054372 0.000003 -0.002041

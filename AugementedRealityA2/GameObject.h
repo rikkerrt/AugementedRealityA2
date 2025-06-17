@@ -14,15 +14,12 @@ class PhysicsComponent;
 class GameObject
 {
 	std::shared_ptr<DrawComponent> drawComponent;
-	std::shared_ptr<PhysicsComponent> physicsComponent;
-	SceneObject* sceneObject;
-
 	std::list<std::shared_ptr<Component>> components;
 public:
 	GameObject();
 	~GameObject();
 
-
+	SceneObject* sceneObject;
 	glm::vec3 position;
 	glm::vec3 rotation = glm::vec3(0, 0, 0);
 	glm::vec3 scale = glm::vec3(1, 1, 1);

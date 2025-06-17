@@ -1,12 +1,12 @@
 #pragma once
 #include "Component.h"
 
-class CarPhysicsComponent : public Component
+class PhysicsComponent : public Component
 {
 public:
 	float radius;
 
 
-	CarPhysicsComponent(float inRadius);
-	~CarPhysicsComponent();
+	PhysicsComponent(float inRadius);
+	~PhysicsComponent();
 };

@@ -10,9 +10,9 @@ class SceneObject
 {
 
 	std::list<std::shared_ptr<GameObject>> gameObjects;
-	float x = 0.0f;
-	float y = 0.0f;
-	float rotationY = 0.0f;
+	double x = 0.0;
+	double y = 0.0;
+	double rotationY = 0.0;
 
 public:
 	SceneObject();
@@ -21,6 +21,7 @@ public:
 	void addGameObject(std::shared_ptr<GameObject> gameObject);
 	void addRoadObject(std::shared_ptr<GameObject> gameObject, int type);
 	std::list<std::shared_ptr<GameObject>> getGameObjects();
+	std::list<std::shared_ptr<GameObject>> getPhysicsObjects();
 	void update(float elapsedTime);
 	void draw(const glm::mat4& parentMatrix = glm::mat4(1.0f));
 
