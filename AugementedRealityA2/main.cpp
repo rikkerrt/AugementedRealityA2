@@ -14,11 +14,11 @@
 #include "CarPhysicsComponent.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
+#define STB_TRUETYPE_IMPLEMENTATION
 #include "stb_truetype.h"
 #include <chrono>
 #include <iomanip>
 
-#define STB_TRUETYPE_IMPLEMENTATION
 
 
 using tigl::Vertex;
