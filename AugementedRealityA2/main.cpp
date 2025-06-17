@@ -4,6 +4,7 @@
 #include "FpsCam.h"
 #include "ObjModel.h"
 #include "TextBox.h"
+#include "io_manager.h"
 
 #include "GameObject.h"
 #include "CubeComponent.h"
@@ -13,10 +14,12 @@
 #include "CarPhysicsComponent.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
-#define STB_TRUETYPE_IMPLEMENTATION
 #include "stb_truetype.h"
 #include <chrono>
 #include <iomanip>
+
+#define STB_TRUETYPE_IMPLEMENTATION
+
 
 using tigl::Vertex;
 
@@ -47,6 +50,9 @@ int completedLapsCount = 0;
 int maxLaps = 3;
 
 std::chrono::steady_clock::time_point startTime;
+std::chrono::duration<double> elapsedTime;
+std::vector<std::chrono::duration<double>> lapTimes;
+
 bool timing = false;
 
 void init();
@@ -172,12 +178,21 @@ void update()
         {
             completedLapsCount++;
             textBox2->setText("You have completed " + std::to_string(completedLapsCount) + " laps!");
+			timing = false;
+			lapTimes.push_back(elapsedTime);
+
+            startTime = std::chrono::steady_clock::now();
+            timing = true;
         }
         if (completedLapsCount == maxLaps)
         {
             //stop game
             timing = false;
             completedLapsCount = 0;
+
+
+            double maxLapTime = (*std::max_element(lapTimes.begin(), lapTimes.end())).count();
+			writeFile("test.txt", maxLapTime);          
         }
 
         crossedCheckpoint1 = false;
@@ -185,7 +200,7 @@ void update()
 	}
     if (timing)
     {
-        std::chrono::duration<double> elapsedTime = std::chrono::steady_clock::now() - startTime;
+        elapsedTime = std::chrono::steady_clock::now() - startTime;
         std::ostringstream stream;
         stream << std::fixed << std::setprecision(3) << elapsedTime.count();
         timeTextBox->setText("Time elapsed: " + stream.str() + " seconds");
@@ -250,5 +265,6 @@ void draw()
 	textBox2->draw();
 	textBox3->draw();
 }
+
 
 
