@@ -49,6 +49,8 @@ bool crossedCheckpoint2 = false;
 int completedLapsCount = 0;
 int maxLaps = 3;
 
+string fileName = "TimeFile.txt";
+
 std::chrono::steady_clock::time_point startTime;
 std::chrono::duration<double> elapsedTime;
 std::vector<std::chrono::duration<double>> lapTimes;
@@ -109,8 +111,8 @@ void init()
     player->position = glm::vec3(0, 0, 20);
     player->addComponent(std::make_shared<ModelComponent>("models/car/carNoWindow.obj"));
 
-    //// Keyboard steering wheel
-    //player->addComponent(std::make_shared<KeyboardSteeringComponent>());
+    // Keyboard steering wheel
+    player->addComponent(std::make_shared<KeyboardSteeringComponent>());
 
     // Vision steering wheel
 	VideoCapture webCam(0);
@@ -118,7 +120,7 @@ void init()
 
     /// CALIBRATION ///
 
-    /*cal.addColor("Yellow");
+   /* cal.addColor("Yellow");
     cal.addColor("Blue");
     
     cal.capurePhoto(webCam);
@@ -131,7 +133,7 @@ void init()
     player->addComponent(std::make_shared<VisionSteeringComponent>(webCam, cal.getColors()));
 
     auto baseComponent = player->getComponent<Component>();
-    auto visionComponent = std::dynamic_pointer_cast<VisionSteeringComponent>(baseComponent);
+  auto visionComponent = std::dynamic_pointer_cast<VisionSteeringComponent>(baseComponent);
 
     if (visionComponent) {
         visionComponent->setDebugMode(true);
@@ -165,10 +167,12 @@ void update()
     static double lastTime = glfwGetTime();
     double currentTime = glfwGetTime();
     camera->update(window, player->position, player->rotation);
-    textBox3->setText(std::to_string(camera->position.x) + ", " + std::to_string(camera->position.z));
+    textBox3->setText(std::to_string(player->position.x) + ", " + std::to_string(player->position.z));
 
-	if (camera->position.x >= startLine1.x && camera->position.x <= startLine2.x &&
-        camera->position.z >= startLine1.z && camera->position.z <= startLine2.z)
+    //if mag alleen 1 keer per seconden getriggerd worden
+	if (player->position.x >= startLine1.x && player->position.x <= startLine2.x &&
+        player->position.z >= startLine1.z && player->position.z <= startLine2.z &&
+        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - startTime).count() >= 1)
 	{
 		textBox2->setText("You are at the start line!");
         startTime = std::chrono::steady_clock::now();
@@ -178,11 +182,7 @@ void update()
         {
             completedLapsCount++;
             textBox2->setText("You have completed " + std::to_string(completedLapsCount) + " laps!");
-			timing = false;
 			lapTimes.push_back(elapsedTime);
-
-            startTime = std::chrono::steady_clock::now();
-            timing = true;
         }
         if (completedLapsCount == maxLaps)
         {
@@ -190,9 +190,8 @@ void update()
             timing = false;
             completedLapsCount = 0;
 
-
             double maxLapTime = (*std::max_element(lapTimes.begin(), lapTimes.end())).count();
-			writeFile("test.txt", maxLapTime);          
+			writeFile(fileName, maxLapTime);          
         }
 
         crossedCheckpoint1 = false;
@@ -205,14 +204,14 @@ void update()
         stream << std::fixed << std::setprecision(3) << elapsedTime.count();
         timeTextBox->setText("Time elapsed: " + stream.str() + " seconds");
     }
-	if (camera->position.x >= checkPoint1l.x && camera->position.x <= checkPoint1r.x &&
-        camera->position.z >= checkPoint1l.z && camera->position.z <= checkPoint1r.z)
+	if (player->position.x >= checkPoint1l.x && player->position.x <= checkPoint1r.x &&
+        player->position.z >= checkPoint1l.z && player->position.z <= checkPoint1r.z)
 	{
 		textBox2->setText("You are at checkpoint 1!");
         crossedCheckpoint1 = true;
 	}
-	if (camera->position.x >= checkPoint2l.x && camera->position.x <= checkPoint2r.x &&
-        camera->position.z >= checkPoint2l.z && camera->position.z <= checkPoint2r.z)
+	if (player->position.x >= checkPoint2l.x && player->position.x <= checkPoint2r.x &&
+        player->position.z >= checkPoint2l.z && player->position.z <= checkPoint2r.z)
 	{
 		textBox2->setText("You are at checkpoint 2!");
         crossedCheckpoint2 = true;

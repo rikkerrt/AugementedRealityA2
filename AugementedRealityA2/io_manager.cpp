@@ -27,9 +27,9 @@ std::vector<RaceData> readFile(const std::string& filename) {
 void writeFile(const std::string& filename, double lapTime) {
     std::ofstream outfile(filename, std::ios::app);
 
-    if (outfile.is_open()) {
-
-        outfile << (getLastId("test.txt")) + 1 << " " << getCurrentDate() << " " << lapTime << std::endl;
+    if (outfile.is_open())
+    {
+        outfile << (getLastId(filename)) + 1 << " " << getCurrentDate() << " " << lapTime << std::endl;
 
         outfile.close();
     }
