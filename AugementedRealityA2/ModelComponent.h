@@ -15,6 +15,6 @@ public:
 	ModelComponent(const std::string& fileName);
 	~ModelComponent();
 
-
+	ObjModel* getModel();
 	virtual void draw() override;
 };

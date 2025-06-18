@@ -12,6 +12,8 @@
 #include "CarPhysicsComponent.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
+
+#include "RoadComponent.h"
 using tigl::Vertex;
 
 #pragma comment(lib, "glfw3.lib")
@@ -96,10 +98,10 @@ void init()
     straight2->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
     scene.addRoadObject(straight2, 1);
 
-	auto straight1 = std::make_shared<GameObject>();
+	/*auto straight1 = std::make_shared<GameObject>();
 	straight1->position = glm::vec3(0, 0, 0);
 	straight1->addComponent(std::make_shared<ModelComponent>("models/test/timing/StartFinish.obj"));
-	scene.addRoadObject(straight1, 4);
+	scene.addRoadObject(straight1, 4);*/
 
 	auto prop = std::make_shared<GameObject>();
 	prop->position = glm::vec3(0, 0, 0);
@@ -137,6 +139,21 @@ void update()
 {
     camera->update(window);
 	scene.update(0.01f);
+
+    std::list<BoundingBox*> roadBoxes = scene.getRoadBoxes();
+	bool ez = false;
+    for (auto& boundingBox : roadBoxes) {
+        if (camera->position.x < boundingBox->tl.x && camera->position.x > boundingBox->br.x &&
+            camera->position.z < boundingBox->tl.y && camera->position.z > boundingBox->br.y) {
+            std::cout << "Collision with road detected!" << std::endl;
+			ez = true;
+            return; // Collision detected, stop the car
+        }
+    }
+    if (!ez) {
+        std::cout << "No collision with road detected!" << std::endl;
+        std::cout << "Camera Position: " << camera->position.x << ", " << camera->position.z << std::endl;
+    }
 }
 
 void draw()

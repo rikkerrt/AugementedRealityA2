@@ -2,6 +2,8 @@
 #include "GameObject.h"
 #include "SteeringComponent.h"
 #include "SceneObject.h"
+#include "RoadComponent.h"
+#include "tigl.h"
 #include <iostream>
 
 CarPhysicsComponent::CarPhysicsComponent()
@@ -23,4 +25,7 @@ void CarPhysicsComponent::update(float elapsedTime)
 	gameObject->rotation.y = (angle / 90) * -1;
 
 	std::list<std::shared_ptr<GameObject>> physicsObjects = gameObject->sceneObject->getPhysicsObjects();
+
+	
+
 }

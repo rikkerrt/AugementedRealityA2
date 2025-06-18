@@ -63,6 +63,9 @@
     <ClCompile Include="PhysicsComponent.cpp">
       <Filter>components</Filter>
     </ClCompile>
+    <ClCompile Include="RoadComponent.cpp">
+      <Filter>components</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tigl.h">
@@ -105,6 +108,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="PhysicsComponent.h">
+      <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="RoadComponent.h">
       <Filter>components</Filter>
     </ClInclude>
   </ItemGroup>

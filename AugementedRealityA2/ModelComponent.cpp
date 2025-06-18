@@ -9,6 +9,11 @@ ModelComponent::~ModelComponent()
 {
 }
 
+ObjModel* ModelComponent::getModel()
+{
+	return model;
+}
+
 void ModelComponent::draw()
 {
 	model->draw();

@@ -167,6 +167,7 @@
     <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="PhysicsComponent.cpp" />
+    <ClCompile Include="RoadComponent.cpp" />
     <ClCompile Include="SceneObject.cpp" />
     <ClCompile Include="SteeringComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="ObjModel.h" />
     <ClInclude Include="PhysicsComponent.h" />
+    <ClInclude Include="RoadComponent.h" />
     <ClInclude Include="SceneObject.h" />
     <ClInclude Include="SteeringComponent.h" />
     <ClInclude Include="Texture.h" />

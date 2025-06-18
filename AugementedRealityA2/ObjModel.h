@@ -7,6 +7,8 @@
 #include <vector>
 #include <list>
 
+#include "RoadComponent.h"
+
 class Texture;
 
 
@@ -51,12 +53,15 @@ private:
 	std::vector<glm::vec2>	texcoords;
 	std::vector<ObjGroup*> groups;
 	std::vector<MaterialInfo*> materials;
+	Rect* rect;
 
+	void buildBoundingBox();
 	void loadMaterialFile(const std::string &fileName, const std::string &dirName);
 public:
 	ObjModel(const std::string &filename);
 	~ObjModel(void);
 
 	void draw();
+	Rect* getRect();
 };
 
