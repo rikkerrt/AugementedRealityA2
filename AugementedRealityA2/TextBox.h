@@ -9,7 +9,7 @@
 class TextBox
 {
 public:
-    TextBox(const std::string& text, glm::vec2 position, glm::vec2 size);
+    TextBox(const std::string& text, glm::vec2 position, glm::vec2 size, std::string font);
     void loadFont(const std::string& fontPath);
     void draw();
     void setText(const std::string& newText);

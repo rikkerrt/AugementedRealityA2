@@ -2,12 +2,13 @@
 
 using tigl::Vertex;
 
-TextBox::TextBox(const std::string& text, glm::vec2 position, glm::vec2 size)
+TextBox::TextBox(const std::string& text, glm::vec2 position, glm::vec2 size, std::string font)
 {
     this->text = text;
     this->position = position;
     this->size = size;
     textColor = glm::vec4(1, 1, 1, 1);
+	loadFont(font);
 }
 
 void TextBox::loadFont(const std::string& fontPath)

@@ -19,8 +19,6 @@
 #include <chrono>
 #include <iomanip>
 
-
-
 using tigl::Vertex;
 
 #pragma comment(lib, "glfw3.lib")
@@ -29,13 +27,17 @@ using tigl::Vertex;
 
 GLFWwindow* window;
 FpsCam* camera;
+ObjModel* circuit;
+
 TextBox* timeTextBox;
 TextBox* textBox2;
 TextBox* textBox3;
-ObjModel* circuit;
+TextBox* endGameText;
 
 int windowHeight;
 int windowWidth;
+
+bool endGame = false;
 
 glm::vec3 startLine1(-6, 0, -1);
 glm::vec3 startLine2(6, 0, 1);
@@ -47,7 +49,8 @@ glm::vec3 checkPoint2r(107, 0, 2);
 bool crossedCheckpoint1 = false;
 bool crossedCheckpoint2 = false;
 int completedLapsCount = 0;
-int maxLaps = 3;
+int maxLaps = 1;
+double fastestLapTime = 0.0;
 
 string fileName = "TimeFile.txt";
 
@@ -115,7 +118,7 @@ void init()
     player->addComponent(std::make_shared<KeyboardSteeringComponent>());
 
     // Vision steering wheel
-	VideoCapture webCam(0);
+	//VideoCapture webCam(0);
     VisionCalibration cal;
 
     /// CALIBRATION ///
@@ -130,15 +133,16 @@ void init()
     /// LOADING IN ///
     cal.load("calibration_settings.json");
 
-    player->addComponent(std::make_shared<VisionSteeringComponent>(webCam, cal.getColors()));
+    //player->addComponent(std::make_shared<VisionSteeringComponent>(webCam, cal.getColors()));
+	player->addComponent(std::make_shared<KeyboardSteeringComponent>());
 
     auto baseComponent = player->getComponent<Component>();
-  auto visionComponent = std::dynamic_pointer_cast<VisionSteeringComponent>(baseComponent);
+   /* auto visionComponent = std::dynamic_pointer_cast<VisionSteeringComponent>(baseComponent);
 
     if (visionComponent) {
         visionComponent->setDebugMode(true);
         visionComponent->setMinimalMarkerSize(50);
-    }
+    }*/
 
     // Add more components
 
@@ -152,26 +156,34 @@ void init()
 	circuit->addComponent(std::make_shared<ModelComponent>("models/circuit/circuit.obj"));
     objects.push_back(circuit);
 
-    timeTextBox = new TextBox("Hello", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80));
-	timeTextBox->loadFont("fonts/Opensans.ttf");
-
-    textBox2 = new TextBox("Hello", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80));
-    textBox2->loadFont("fonts/Opensans.ttf");
-
-    textBox3 = new TextBox("Hello", glm::vec2(windowHeight -1000, 10), glm::vec2(300, 80));
-    textBox3->loadFont("fonts/Opensans.ttf");
+    timeTextBox = new TextBox("---", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    textBox2 = new TextBox("---", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    textBox3 = new TextBox("---", glm::vec2(windowHeight -1000, 10), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    endGameText = new TextBox("", glm::vec2(windowHeight - 300, 500), glm::vec2(300, 80), "fonts/Opensans.ttf");
 }
 
 void update()
 {
+    if (endGame)
+    {
+        endGameText->setText("Game Over! Your fastest laptime is: " + std::to_string(fastestLapTime) + "\nPress Z to start again");
+
+        if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
+        {
+            endGame = false;
+            completedLapsCount = 0;
+        }
+        return;
+    }
+
     static double lastTime = glfwGetTime();
     double currentTime = glfwGetTime();
     camera->update(window, player->position, player->rotation);
-    textBox3->setText(std::to_string(player->position.x) + ", " + std::to_string(player->position.z));
+    textBox3->setText(std::to_string(camera->position.x) + ", " + std::to_string(camera->position.z));
 
     //if mag alleen 1 keer per seconden getriggerd worden
-	if (player->position.x >= startLine1.x && player->position.x <= startLine2.x &&
-        player->position.z >= startLine1.z && player->position.z <= startLine2.z &&
+	if (camera->position.x >= startLine1.x && camera->position.x <= startLine2.x &&
+        camera->position.z >= startLine1.z && camera->position.z <= startLine2.z &&
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - startTime).count() >= 1)
 	{
 		textBox2->setText("You are at the start line!");
@@ -188,10 +200,10 @@ void update()
         {
             //stop game
             timing = false;
-            completedLapsCount = 0;
+            endGame = true;
 
-            double maxLapTime = (*std::max_element(lapTimes.begin(), lapTimes.end())).count();
-			writeFile(fileName, maxLapTime);          
+            fastestLapTime = (*std::min_element(lapTimes.begin(), lapTimes.end())).count();
+			writeFile(fileName, fastestLapTime);
         }
 
         crossedCheckpoint1 = false;
@@ -204,30 +216,27 @@ void update()
         stream << std::fixed << std::setprecision(3) << elapsedTime.count();
         timeTextBox->setText("Time elapsed: " + stream.str() + " seconds");
     }
-	if (player->position.x >= checkPoint1l.x && player->position.x <= checkPoint1r.x &&
-        player->position.z >= checkPoint1l.z && player->position.z <= checkPoint1r.z)
+	if (camera->position.x >= checkPoint1l.x && camera->position.x <= checkPoint1r.x &&
+        camera->position.z >= checkPoint1l.z && camera->position.z <= checkPoint1r.z)
 	{
 		textBox2->setText("You are at checkpoint 1!");
         crossedCheckpoint1 = true;
 	}
-	if (player->position.x >= checkPoint2l.x && player->position.x <= checkPoint2r.x &&
-        player->position.z >= checkPoint2l.z && player->position.z <= checkPoint2r.z)
+	if (camera->position.x >= checkPoint2l.x && camera->position.x <= checkPoint2r.x &&
+        camera->position.z >= checkPoint2l.z && camera->position.z <= checkPoint2r.z)
 	{
 		textBox2->setText("You are at checkpoint 2!");
         crossedCheckpoint2 = true;
 	}
-
-    for (auto& o : objects)
-    {
-        o->update(0.01f);
-    }
 
     float elapsedTime = static_cast<float>(currentTime - lastTime);
     lastTime = currentTime;
 
     camera->update(window, player->position, player->rotation);
     for (auto& o : objects)
+    {
         o->update(elapsedTime);
+    }
 }
 
 
@@ -263,6 +272,7 @@ void draw()
     timeTextBox->draw();
 	textBox2->draw();
 	textBox3->draw();
+    endGameText->draw();
 }
 
 
