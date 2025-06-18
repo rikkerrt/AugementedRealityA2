@@ -1,5 +1,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <fstream>
+#include <sstream>
 #include "tigl.h"
 #include "FpsCam.h"
 #include "ObjModel.h"
@@ -29,6 +31,7 @@ void init();
 void update();
 void draw();
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void buildTrackFromFile(const std::string& filename);
 
 int main(void)
 {
@@ -46,6 +49,7 @@ int main(void)
     tigl::init();
 
     init();
+    buildTrackFromFile("models/Circuit/Circuitvolgorde.txt");
 
     while (!glfwWindowShouldClose(window))
     {
@@ -102,11 +106,6 @@ void init()
 	straight1->position = glm::vec3(0, 0, 0);
 	straight1->addComponent(std::make_shared<ModelComponent>("models/test/timing/StartFinish.obj"));
 	scene.addRoadObject(straight1, 4);*/
-
-    auto sectorStraight = std::make_shared<GameObject>();
-    sectorStraight->position = glm::vec3(0, 0, 0);
-    sectorStraight->addComponent(std::make_shared<ModelComponent>("models/test/timing/SectorStraight.obj"));
-    scene.addGameObject(sectorStraight);
 
 	auto prop = std::make_shared<GameObject>();
 	prop->position = glm::vec3(0, 0, 0);
@@ -189,4 +188,47 @@ void draw()
     glPointSize(10.0f);
 
 	scene.draw();
+}
+
+void buildTrackFromFile(const std::string& filename) 
+{
+    std::ifstream infile(filename);
+    if (!infile.is_open()) {
+        std::cerr << "Kon baanbestand niet openen: " << filename << std::endl;
+        return;
+    }
+
+    std::string line;
+    std::getline(infile, line);
+    infile.close();
+
+    std::stringstream ss(line);
+    std::string token;
+
+    while (std::getline(ss, token, ',')) {
+        int segmentType = std::stoi(token);
+        auto segment = std::make_shared<GameObject>();
+        segment->position = glm::vec3(0, 0, 0);
+
+        if (segmentType == 1) {
+            segment->addComponent(std::make_shared<ModelComponent>("models/test/straight/curve.obj"));
+            scene.addRoadObject(segment, 1);
+        }
+        else if (segmentType == 2) {
+            segment->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveRight.obj"));
+            scene.addRoadObject(segment, 2);
+        }
+        else if (segmentType == 3) {
+            segment->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveLeft.obj"));
+            scene.addRoadObject(segment, 3);
+        }
+        else if (segmentType == 4) {
+            segment->addComponent(std::make_shared<ModelComponent>("models/test/timing/StartFinish.obj"));
+            scene.addRoadObject(segment, 4);
+        }
+        else if (segmentType == 5) {
+            segment->addComponent(std::make_shared<ModelComponent>("models/test/timing/SectorStraight.obj"));
+            scene.addRoadObject(segment, 5);
+        }
+    }
 }
