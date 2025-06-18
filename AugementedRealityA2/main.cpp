@@ -103,6 +103,11 @@ void init()
 	straight1->addComponent(std::make_shared<ModelComponent>("models/test/timing/StartFinish.obj"));
 	scene.addRoadObject(straight1, 4);*/
 
+    auto sectorStraight = std::make_shared<GameObject>();
+    sectorStraight->position = glm::vec3(0, 0, 0);
+    sectorStraight->addComponent(std::make_shared<ModelComponent>("models/test/timing/SectorStraight.obj"));
+    scene.addGameObject(sectorStraight);
+
 	auto prop = std::make_shared<GameObject>();
 	prop->position = glm::vec3(0, 0, 0);
 	prop->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree1.obj"));
@@ -132,6 +137,13 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		straight4->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveLeft.obj"));
 		scene.addRoadObject(straight4, 3);
 	}
+
+    if (key == GLFW_KEY_K && action == GLFW_PRESS) {
+        auto sectorStraight = std::make_shared<GameObject>();
+        sectorStraight->position = glm::vec3(0, 0, 0);
+        sectorStraight->addComponent(std::make_shared<ModelComponent>("models/test/timing/SectorStraight.obj"));
+        scene.addRoadObject(sectorStraight,5);
+    }
 }
 
 
