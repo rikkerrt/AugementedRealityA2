@@ -3,6 +3,11 @@
 # Baan coördinaten voor het circuit die we automatisch willen maken zodat die opgeslagen en aangepast kan worden.
 
 # De getallenreeks is als volgt:
+# 1 - Straight
+# 2 - Curve Right
+# 3 - Curve Left
+# 4 - Start-Finish
+# 5 - Sector Marker
 
 
 
