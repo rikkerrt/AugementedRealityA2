@@ -88,6 +88,10 @@ void SceneObject::addRoadObject(std::shared_ptr<GameObject> gameObject, int type
 		x += 0.0 * cos(rotationY) - 4.224 * sin(rotationY);
 		y -= 0.0 * sin(rotationY) + 4.224 * cos(rotationY);
 	}
+	if (type == 5) {
+		x += 0.0 * cos(rotationY) - 10.5475 * sin(rotationY);
+		y -= 0.0 * sin(rotationY) + 10.5475 * cos(rotationY);
+	}
 	gameObjects.push_back(gameObject);
 
 	std::cout << "oui oui" << x << ", " << y << std::endl;
