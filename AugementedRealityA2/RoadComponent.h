@@ -1,0 +1,21 @@
+#pragma once
+#include "Component.h"
+#include <glm/glm.hpp>
+
+struct Rect {
+	glm::vec2 tl, tr, br, bl;
+};
+
+struct BoundingBox {
+	glm::vec2 tl, br;
+};
+
+class RoadComponent : public Component
+{
+public:
+	BoundingBox* roadBox;
+
+
+	RoadComponent(BoundingBox* rect);
+	~RoadComponent();
+};

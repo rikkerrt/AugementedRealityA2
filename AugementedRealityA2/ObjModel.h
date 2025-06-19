@@ -2,11 +2,13 @@
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
-
+#include "tigl.h"
 #include <string>
 #include <vector>
 #include <list>
 #include "tigl.h"
+
+#include "RoadComponent.h"
 
 class Texture;
 
@@ -57,7 +59,9 @@ private:
 	std::vector<glm::vec2>	texcoords;
 	std::vector<ObjGroup*> groups;
 	std::vector<MaterialInfo*> materials;
+	Rect* rect;
 
+	void buildBoundingBox();
 	void loadMaterialFile(const std::string &fileName, const std::string &dirName);
 
 	/// <summary>
@@ -79,17 +83,6 @@ public:
 	~ObjModel(void);
 
 	void draw();
-
-	/// <summary>
-/// Get the minimum bound vertex point
-/// </summary>
-/// <returns>the minimum bound vertex point</returns>
-	glm::vec3 getMinimumBounds();
-
-	/// <summary>
-	/// Get the maximum bound vertex poin
-	/// </summary>
-	/// <returns>the maximum bound vertex point</returns>
-	glm::vec3 getMaximumBounds();
+	Rect* getRect();
 };
 

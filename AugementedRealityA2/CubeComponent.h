@@ -2,6 +2,7 @@
 
 #include "DrawComponent.h"
 #include "tigl.h"
+
 using tigl::Vertex;
 
 #include <vector>

@@ -7,6 +7,8 @@
 #include "tigl.h"
 #include "Texture.h"
 
+#include "RoadComponent.h"
+
 using tigl::Vertex;
 
 /**
@@ -91,7 +93,6 @@ ObjModel::ObjModel(const std::string &fileName)
 	if(fileName == dirName)
 		dirName = "";
 
-
 	std::ifstream pFile(fileName.c_str());
 
 	if (!pFile.is_open())
@@ -175,10 +176,9 @@ ObjModel::ObjModel(const std::string &fileName)
 		}
 	}
 	groups.push_back(currentGroup);
-
 	buildVertexBuffer();
-	buildMinimalBounds();
-	buildMaximumBound();
+	rect = new Rect();
+	buildBoundingBox();
 }
 
 
@@ -295,6 +295,28 @@ void ObjModel::loadMaterialFile( const std::string &fileName, const std::string 
 	if(currentMaterial != NULL)
 		materials.push_back(currentMaterial);
 
+}
+
+void ObjModel::buildBoundingBox() {
+	for (const auto& v : vertices)
+	{
+		rect->br.x = std::min(rect->br.x, v.x);
+		rect->br.y = std::min(rect->br.y, -v.z);
+
+		rect->bl.x = std::min(rect->bl.x, v.x);
+		rect->bl.y = std::max(rect->bl.y, -v.z);
+
+		rect->tl.x = std::max(rect->tl.x, v.x);
+		rect->tl.y = std::max(rect->tl.y, -v.z);
+
+		rect->tr.x = std::max(rect->tr.x, v.x);
+		rect->tr.y = std::min(rect->tr.y, -v.z);
+	}
+}
+
+Rect* ObjModel::getRect()
+{
+	return rect;
 }
 
 ObjModel::MaterialInfo::MaterialInfo()

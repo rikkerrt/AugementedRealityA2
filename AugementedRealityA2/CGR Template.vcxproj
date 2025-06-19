@@ -175,10 +175,14 @@
     <ClCompile Include="io_manager.cpp" />
     <ClCompile Include="KeyboardSteeringComponent.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MapLoader.cpp" />
     <ClCompile Include="ModelComponent.cpp" />
     <ClCompile Include="ObjModel.cpp" />
     <ClCompile Include="stb_truetype_impl.cpp" />
     <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="PhysicsComponent.cpp" />
+    <ClCompile Include="RoadComponent.cpp" />
+    <ClCompile Include="SceneObject.cpp" />
     <ClCompile Include="SteeringComponent.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="tigl.cpp" />
@@ -199,8 +203,12 @@
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="io_manager.h" />
     <ClInclude Include="KeyboardSteeringComponent.h" />
+    <ClInclude Include="MapLoader.h" />
     <ClInclude Include="ModelComponent.h" />
     <ClInclude Include="ObjModel.h" />
+    <ClInclude Include="PhysicsComponent.h" />
+    <ClInclude Include="RoadComponent.h" />
+    <ClInclude Include="SceneObject.h" />
     <ClInclude Include="race_data.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="SteeringComponent.h" />

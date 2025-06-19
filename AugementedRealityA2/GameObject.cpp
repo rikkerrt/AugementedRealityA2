@@ -1,5 +1,6 @@
 #include "GameObject.h"
 #include "DrawComponent.h"
+#include "PhysicsComponent.h"
 #include "tigl.h"
 #include <glm/gtc/matrix_transform.hpp>
 

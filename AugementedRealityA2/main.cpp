@@ -5,23 +5,25 @@
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <glm/gtc/matrix_transform.hpp>
-
-#pragma comment(lib, "glfw3.lib")
-#pragma comment(lib, "glew32s.lib")
-#pragma comment(lib, "opengl32.lib")
-
 #include "tigl.h"
 #include "ObjModel.h"
 #include "io_manager.h"
 #include "CheckPointManager.h"
 #include "GameObject.h"
+#include "SceneObject.h"
+#include "CubeComponent.h"
 #include "CameraManager.h"
 #include "ModelComponent.h"
 #include "PerspectiveCameraComponent.h"
 #include "KeyboardSteeringComponent.h"
 #include "VisionSteeringComponent.h"
 #include "CarPhysicsComponent.h"
+#include "PhysicsComponent.h"
+#include <iostream>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include "RoadComponent.h"
+#include "MapLoader.h"
 #include "ChildComponent.h"
 
 #include "TextBox.h"
@@ -33,6 +35,7 @@ CameraManager* cameraManager;
 
 /* Dit blok hier moet echt weg*/
 ObjModel* circuit;
+SceneObject scene;
 CheckPointManager checkPointManager;
 
 std::list<std::shared_ptr<TextBox>> textBoxes;
@@ -49,8 +52,10 @@ int windowHeight;
 int windowWidth;
 
 void init();
+void initWorld();
 void update();
 void draw();
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 int main(void)
 {
@@ -67,6 +72,7 @@ int main(void)
 
     tigl::init();
     init();
+    
 
     while (!glfwWindowShouldClose(window))
     {
@@ -86,11 +92,7 @@ void init()
 
     int value[10];
     glGetIntegerv(GL_MAX_TEXTURE_SIZE, value);
-    glfwSetKeyCallback(window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
-        {
-            if (key == GLFW_KEY_ESCAPE)
-                glfwSetWindowShouldClose(window, true);
-        });
+    glfwSetKeyCallback(window, keyCallback);
 
     std::vector<Zone> zones = {
     {{-6, 0, -1}, {6, 0, 1}, ZoneType::Start},
@@ -100,6 +102,14 @@ void init()
     };
     checkPointManager.init(zones, "TimeFile.txt", 3);
 
+    scene = SceneObject();
+    auto player = std::make_shared<GameObject>();
+
+    player->position = glm::vec3(0, 0, 5);
+    player->addComponent(std::make_shared<ModelComponent>("models/car/carNoWindow.obj"));
+	player->addComponent(std::make_shared<KeyboardSteeringComponent>());
+	player->addComponent(std::make_shared<CarPhysicsComponent>());
+    scene.addGameObject(player);
     // Add car
     car = std::make_shared<GameObject>();
     car->position = glm::vec3(0, 0, 5);
@@ -112,15 +122,11 @@ void init()
     steeringWheel->addComponent(std::make_shared<ModelComponent>("models/car/steeringWheel.obj"));
     steeringWheel->addComponent(std::make_shared<ChildComponent>(car));
     objects.push_back(steeringWheel);
+    loadMap(&scene);
 
-    // Add circuit
-    auto circuit = std::make_shared<GameObject>();
-    circuit->position = glm::vec3(0, 0, 0);
-    circuit->addComponent(std::make_shared<ModelComponent>("models/circuit/circuit.obj"));
-    objects.push_back(circuit);
     // Add Camera
-    auto camera = std::make_shared<GameObject>();
     camera->addComponent(std::make_shared<ChildComponent>(car, glm::vec3{0.3, 1.25, 0}));
+    auto camera = std::make_shared<GameObject>();
     camera->addComponent(std::make_shared<PerspectiveCameraComponent>());
     objects.push_back(camera);
     cameraManager = new CameraManager(camera);
@@ -134,8 +140,8 @@ void init()
         VideoCapture webCam(0);
         VisionCalibration cal;
 
-        if (calibrateVision)
         {
+        if (calibrateVision)
             cal.addColor("Yellow");
             cal.addColor("Blue");
 
@@ -155,28 +161,32 @@ void init()
         if (visionComponent) {
             visionComponent->setDebugMode(true);
             visionComponent->setMinimalMarkerSize(50);
-        }
     } 
+        }
     else
-    {
         car->addComponent(std::make_shared<KeyboardSteeringComponent>());
+    {
     }
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glPointSize(10.0f);
     tigl::shader->enableColor(true);
     tigl::shader->enableTexture(true);
-    timeTextBox = std::make_shared<TextBox>("---", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80), "fonts/Opensans.ttf");
 	textBoxes.push_back(timeTextBox);
-    messageTextBox = std::make_shared<TextBox>("---", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80), "fonts/Opensans.ttf");
     textBoxes.push_back(messageTextBox);
-    textBox3 = std::make_shared<TextBox>("---", glm::vec2(windowWidth -1000, 30), glm::vec2(300, 80), "fonts/Opensans.ttf");
 	textBoxes.push_back(textBox3);
 	endGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth - 1000,300), glm::vec2(300, 80), "fonts/Opensans.ttf");
 	textBoxes.push_back(endGameTextBox);
+    textBox3 = std::make_shared<TextBox>("---", glm::vec2(windowWidth -1000, 30), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    messageTextBox = std::make_shared<TextBox>("---", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    timeTextBox = std::make_shared<TextBox>("---", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    glPointSize(10.0f);
+void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
+	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
 }
 
 void update()
@@ -193,11 +203,9 @@ void update()
     float elapsedTime = static_cast<float>(currentTime - lastTime);
     lastTime = currentTime;
 
-    for (auto& o : objects)
-    {
-        o->update(elapsedTime);
-    }
     textBox3->setText(std::to_string(car->position.x) + ", " + std::to_string(car->position.z));
+    camera->update(window);
+	scene.update(0.01f);
 }
 
 void draw()
@@ -222,6 +230,13 @@ void draw()
     glm::mat4 orthoProjection = glm::ortho(0.0f, (float)viewport[2], (float)viewport[3], 0.0f);
     tigl::shader->setProjectionMatrix(orthoProjection);
 
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE);
+
+    glPointSize(10.0f);
+
+	scene.draw();
+}
 	for (auto& textBox : textBoxes)
 	{
 		textBox->draw();
