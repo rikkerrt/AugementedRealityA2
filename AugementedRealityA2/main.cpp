@@ -49,8 +49,7 @@ std::shared_ptr<GameObject> car;
 int windowHeight;
 int windowWidth;
 
-void init();
-void initWorld();
+void initGame();
 void update();
 void draw();
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -69,7 +68,7 @@ int main(void)
     glfwMakeContextCurrent(window);
 
     tigl::init();
-    init();
+    initGame();
     
 
     while (!glfwWindowShouldClose(window))
@@ -84,7 +83,7 @@ int main(void)
     return 0;
 }
 
-void init()
+void initGame()
 {
     glfwGetWindowSize(window, &windowWidth, &windowHeight);
 
@@ -156,27 +155,27 @@ void init()
             visionComponent->setDebugMode(true);
             visionComponent->setMinimalMarkerSize(50);
         }
-        else
-        {
-            car->addComponent(std::make_shared<KeyboardSteeringComponent>());
-        }
-
-        glEnable(GL_DEPTH_TEST);
-        glEnable(GL_TEXTURE);
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        tigl::shader->enableColor(true);
-        tigl::shader->enableTexture(true);
-        textBoxes.push_back(timeTextBox);
-        textBoxes.push_back(messageTextBox);
-        textBoxes.push_back(textBox3);
-        endGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth - 1000, 300), glm::vec2(300, 80), "fonts/Opensans.ttf");
-        textBoxes.push_back(endGameTextBox);
-        textBox3 = std::make_shared<TextBox>("---", glm::vec2(windowWidth - 1000, 30), glm::vec2(300, 80), "fonts/Opensans.ttf");
-        messageTextBox = std::make_shared<TextBox>("---", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80), "fonts/Opensans.ttf");
-        timeTextBox = std::make_shared<TextBox>("---", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80), "fonts/Opensans.ttf");
-        glPointSize(10.0f);
     }
+    else
+    {
+        car->addComponent(std::make_shared<KeyboardSteeringComponent>());
+    }
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    tigl::shader->enableColor(true);
+    tigl::shader->enableTexture(true);
+   /* textBoxes.push_back(timeTextBox);
+    textBoxes.push_back(messageTextBox);
+    textBoxes.push_back(textBox3);
+    endGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth - 1000, 300), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    textBoxes.push_back(endGameTextBox);
+    textBox3 = std::make_shared<TextBox>("---", glm::vec2(windowWidth - 1000, 30), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    messageTextBox = std::make_shared<TextBox>("---", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    timeTextBox = std::make_shared<TextBox>("---", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80), "fonts/Opensans.ttf");*/
+    glPointSize(10.0f);
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -187,7 +186,8 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 void update()
 {
-    bool gameContinues = checkPointManager.update(car->position, messageTextBox, timeTextBox, endGameTextBox, window);
+    //bool gameContinues = checkPointManager.update(car->position, messageTextBox, timeTextBox, endGameTextBox, window);
+    bool gameContinues = true;
     if (!gameContinues)
     {
         return;
@@ -199,7 +199,8 @@ void update()
     float elapsedTime = static_cast<float>(currentTime - lastTime);
     lastTime = currentTime;
 
-    textBox3->setText(std::to_string(car->position.x) + ", " + std::to_string(car->position.z));
+    //textBox3->setText(std::to_string(car->position.x) + ", " + std::to_string(car->position.z));
+    //textBox3->setText("lol");
 	scene.update( elapsedTime);
 }
 
@@ -224,8 +225,8 @@ void draw()
     glm::mat4 orthoProjection = glm::ortho(0.0f, (float)viewport[2], (float)viewport[3], 0.0f);
     tigl::shader->setProjectionMatrix(orthoProjection);
 
-    for (auto& textBox : textBoxes)
+    /*for (auto& textBox : textBoxes)
     {
         textBox->draw();
-    }
+    }*/
 }

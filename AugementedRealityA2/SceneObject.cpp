@@ -65,11 +65,6 @@ void SceneObject::addRoadObject(std::shared_ptr<GameObject> gameObject, int type
 
 	gameObject->addComponent(std::make_shared<RoadComponent>(boundingBox));
 
-	std::cout << "Road Rect: " << boundingBox->tl.x << ", "
-		<< boundingBox->tl.y << ", "
-		<< boundingBox->br.x << ", "
-		<< boundingBox->br.y << std::endl;
-
 	if (type == 1) {
 		x += 0.0 * cos(rotationY) - 10.5475 * sin(rotationY);
 		y -= 0.0 * sin(rotationY) + 10.5475 * cos(rotationY);
@@ -93,9 +88,6 @@ void SceneObject::addRoadObject(std::shared_ptr<GameObject> gameObject, int type
 		y -= 0.0 * sin(rotationY) + 10.5475 * cos(rotationY);
 	}
 	gameObjects.push_back(gameObject);
-
-	std::cout << "oui oui" << x << ", " << y << std::endl;
-	
 }
 
 std::list<std::shared_ptr<GameObject>> SceneObject::getGameObjects()

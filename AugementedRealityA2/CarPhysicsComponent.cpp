@@ -38,7 +38,7 @@ void CarPhysicsComponent::update(float elapsedTime)
 
 			float angleDiff = glm::mod(angle - objAngle + 540.0f, 360.0f) - 180.0f;
 			if (std::abs(angleDiff) < 90.0f) {
-				speed = 0.0f;
+				currentSpeed = 0;
 				break;
 			}
 		}
@@ -56,7 +56,7 @@ void CarPhysicsComponent::update(float elapsedTime)
 	}
 
 	if (!onGrass) {
-		speed = speed / 2;
+		currentSpeed /= 2;
 	}
 
     // Calculate target steering angle
