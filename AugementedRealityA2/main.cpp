@@ -102,7 +102,7 @@ void initWorld() {
     scene.addGameObject(groundLayer);
 
     // props
-    for (int i = 0; i < 25; ++i) {
+    for (int i = 0; i < 100; ++i) {
         bool OnRoad = false;
         bool running = true;
 		float randomFloatX, randomFloatZ;
@@ -118,8 +118,8 @@ void initWorld() {
             
 			std::list<BoundingBox*> roadBoxes = scene.getRoadBoxes();
 			for (auto& boundingBox : roadBoxes) {
-				if (randomFloatX < boundingBox->tl.x && randomFloatX > boundingBox->br.x &&
-					randomFloatZ < boundingBox->tl.y && randomFloatZ > boundingBox->br.y) {
+				if (-randomFloatX < boundingBox->tl.x && -randomFloatX > boundingBox->br.x &&
+					-randomFloatZ < boundingBox->tl.y && -randomFloatZ > boundingBox->br.y) {
 					OnRoad = true;
                     std::cout << "Inside for loop" << i << std::endl;
                     break;
@@ -127,17 +127,15 @@ void initWorld() {
 		    }
             if (!OnRoad)
             {
-                OnRoad = false;
                 running = false;
                 std::cout << "Outside if statement" << i << std::endl;
             }
+            OnRoad = false;
 		}
-  
-         auto prop = std::make_shared<GameObject>();
-         prop->position = glm::vec3(randomFloatX, 0, randomFloatZ);
-         prop->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree1.obj"));
-         scene.addGameObject(prop);
-   
+        auto prop = std::make_shared<GameObject>();
+        prop->position = glm::vec3(randomFloatX, 0, randomFloatZ);
+        prop->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree1.obj"));
+        scene.addGameObject(prop);
     }
 }
 
