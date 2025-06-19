@@ -33,7 +33,6 @@ CameraManager* cameraManager;
 
 /* Dit blok hier moet echt weg*/
 TextBox* textBox;
-FpsCam* camera;
 ObjModel* circuit;
 CheckPointManager checkPointManager;
 
@@ -44,7 +43,9 @@ std::shared_ptr<TextBox> textBox3;
 std::shared_ptr<TextBox> endGameTextBox;
 
 std::list<std::shared_ptr<GameObject>> objects;
-std::shared_ptr<GameObject> player;
+//std::shared_ptr<GameObject> car;
+std::shared_ptr<GameObject> car;
+
 
 int windowHeight;
 int windowWidth;
@@ -80,9 +81,6 @@ int main(void)
     glfwTerminate();
     return 0;
 }
-
-std::list<std::shared_ptr<GameObject>> objects;
-std::shared_ptr<GameObject> car;
 
 void init()
 {
@@ -121,15 +119,6 @@ void init()
     circuit->position = glm::vec3(0, 0, 0);
     circuit->addComponent(std::make_shared<ModelComponent>("models/circuit/circuit.obj"));
     objects.push_back(circuit);
-
-    textBox = new TextBox("Hello", glm::vec2(1500, 50), glm::vec2(300, 80));
-    textBox->loadFont("fonts/Opensans.ttf");
-
-    timeTextBox = new TextBox("TimeTextBox", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80));
-    textBox->loadFont("fonts/Opensans.ttf");
-
-    textBox2 = new TextBox("Hello", glm::vec2(windowHeight - 300, 50), glm::vec2(300, 80));
-    textBox2->loadFont("fonts/Opensans.ttf");
     // Add Camera
     auto camera = std::make_shared<GameObject>();
     camera->addComponent(std::make_shared<ChildComponent>(car, glm::vec3{0.3, 1.25, 0}));
@@ -193,23 +182,11 @@ void init()
 
 void update()
 {
-    bool gameContinues = checkPointManager.update(player->position, textBox2, timeTextBox, endGameTextBox, window);
+    bool gameContinues = checkPointManager.update(car->position, textBox2, timeTextBox, endGameTextBox, window);
     if (!gameContinues)
     {
         return;
     }
-	if (player->position.x >= checkPoint1l.x && player->position.x <= checkPoint1r.x &&
-        player->position.z >= checkPoint1l.z && player->position.z <= checkPoint1r.z)
-	{
-		textBox2->setText("You are at checkpoint 1!");
-        crossedCheckpoint1 = true;
-	}
-	if (player->position.x >= checkPoint2l.x && player->position.x <= checkPoint2r.x &&
-        player->position.z >= checkPoint2l.z && player->position.z <= checkPoint2r.z)
-	{
-		textBox2->setText("You are at checkpoint 2!");
-        crossedCheckpoint2 = true;
-	}
 
     // Deze logica niet!
     static double lastTime = glfwGetTime();
@@ -221,10 +198,7 @@ void update()
     {
         o->update(elapsedTime);
     }
-
-    camera->update(window, player->position, player->rotation);
-
-    textBox3->setText(std::to_string(player->position.x) + ", " + std::to_string(player->position.z));
+    textBox3->setText(std::to_string(car->position.x) + ", " + std::to_string(car->position.z));
 }
 
 void draw()
