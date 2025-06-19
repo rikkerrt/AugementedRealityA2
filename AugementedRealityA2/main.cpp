@@ -34,7 +34,6 @@ GLFWwindow* window;
 CameraManager* cameraManager;
 
 /* Dit blok hier moet echt weg*/
-ObjModel* circuit;
 SceneObject scene;
 CheckPointManager checkPointManager;
 
@@ -102,13 +101,7 @@ void init()
     checkPointManager.init(zones, "TimeFile.txt", 3);
 
     scene = SceneObject();
-    auto player = std::make_shared<GameObject>();
 
-    player->position = glm::vec3(0, 0, 5);
-    player->addComponent(std::make_shared<ModelComponent>("models/car/carNoWindow.obj"));
-	player->addComponent(std::make_shared<KeyboardSteeringComponent>());
-	player->addComponent(std::make_shared<CarPhysicsComponent>());
-    scene.addGameObject(player);
     // Add car
     car = std::make_shared<GameObject>();
     car->position = glm::vec3(0, 0, 5);
