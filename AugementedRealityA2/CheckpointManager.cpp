@@ -42,19 +42,25 @@ bool CheckPointManager::update(const glm::vec3& position, std::shared_ptr<TextBo
         elapsedTime = std::chrono::steady_clock::now() - startTime;
         std::ostringstream stream;
         stream << std::fixed << std::setprecision(3) << elapsedTime.count();
-        timeBox->setText("Time: " + stream.str() + " sec");
+
+        std::string sectorStatus;
+        for (size_t i = 0; i < checkpointsCrossed.size(); ++i) {
+            sectorStatus += "Sector " + std::to_string(i + 1) + ": " +
+                (checkpointsCrossed[i] ? "V" : "X") + "  ";
+        }
+
+        timeBox->setText("Time: " + stream.str() + " sec\n" + sectorStatus);
     }
+
 
     for (const auto& zone : zones) {
         if (position.x >= zone.min.x && position.x <= zone.max.x &&
             position.z >= zone.min.z && position.z <= zone.max.z) {
-            std::cout << "Zone index: " << zone.index << std::endl;
             if (zone.type == ZoneType::Start) {
                 handleStartZone(messageBox, endBox);
             }
             else if (zone.type == ZoneType::Checkpoint && zone.index >= 0 &&
                 zone.index < checkpointsCrossed.size() && !checkpointsCrossed[zone.index]) {
-                std::cout << "checkpoint " << std::endl;
                 handleCheckpointZone(zone.index, messageBox);
             }
         }

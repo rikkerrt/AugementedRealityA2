@@ -94,8 +94,7 @@ void initGame()
     std::vector<Zone> zones = {
     {{-6, 0, -1}, {6, 0, 1}, ZoneType::Start},
     {{-72, 0, -86}, {-59, 0, -84}, ZoneType::Checkpoint},
-    {{-107, 0, -2}, {-95, 0, 0}, ZoneType::Checkpoint},
-	{{-6, 0, -42}, {6, 0, -40}, ZoneType::Checkpoint}
+    {{-107, 0, -2}, {-95, 0, 0}, ZoneType::Checkpoint}
     };
     checkPointManager.init(zones, "TimeFile.txt", 3);
 
@@ -167,14 +166,14 @@ void initGame()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     tigl::shader->enableColor(true);
     tigl::shader->enableTexture(true);
-   /* textBoxes.push_back(timeTextBox);
+
+    timeTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.95f - 300, windowHeight * 0.02f), "fonts/Opensans.ttf");
+	textBoxes.push_back(timeTextBox);
+    messageTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.15f, windowHeight * 0.88f - 20), "fonts/Opensans.ttf");
     textBoxes.push_back(messageTextBox);
-    textBoxes.push_back(textBox3);
-    endGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth - 1000, 300), glm::vec2(300, 80), "fonts/Opensans.ttf");
-    textBoxes.push_back(endGameTextBox);
-    textBox3 = std::make_shared<TextBox>("---", glm::vec2(windowWidth - 1000, 30), glm::vec2(300, 80), "fonts/Opensans.ttf");
-    messageTextBox = std::make_shared<TextBox>("---", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80), "fonts/Opensans.ttf");
-    timeTextBox = std::make_shared<TextBox>("---", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80), "fonts/Opensans.ttf");*/
+    textBox3 = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.05f, windowHeight * 0.1f), "fonts/Opensans.ttf");
+	textBoxes.push_back(textBox3);
+    endGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.5f - 100, windowHeight * 0.5f), "fonts/Opensans.ttf");
     glPointSize(10.0f);
 }
 
@@ -199,9 +198,8 @@ void update()
     float elapsedTime = static_cast<float>(currentTime - lastTime);
     lastTime = currentTime;
 
-    //textBox3->setText(std::to_string(car->position.x) + ", " + std::to_string(car->position.z));
-    //textBox3->setText("lol");
-	scene.update( elapsedTime);
+
+    textBox3->setText(std::to_string(car->position.x) + ", " + std::to_string(car->position.z));
 }
 
 void draw()
@@ -225,8 +223,8 @@ void draw()
     glm::mat4 orthoProjection = glm::ortho(0.0f, (float)viewport[2], (float)viewport[3], 0.0f);
     tigl::shader->setProjectionMatrix(orthoProjection);
 
-    /*for (auto& textBox : textBoxes)
+    for (auto& textBox : textBoxes)
     {
         textBox->draw();
-    }*/
+    }
 }
