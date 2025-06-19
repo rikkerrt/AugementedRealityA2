@@ -95,8 +95,7 @@ void init()
     std::vector<Zone> zones = {
     {{-6, 0, -1}, {6, 0, 1}, ZoneType::Start},
     {{-72, 0, -86}, {-59, 0, -84}, ZoneType::Checkpoint},
-    {{-107, 0, -2}, {-95, 0, 0}, ZoneType::Checkpoint},
-	{{-6, 0, -42}, {6, 0, -40}, ZoneType::Checkpoint}
+    {{-107, 0, -2}, {-95, 0, 0}, ZoneType::Checkpoint}
     };
     checkPointManager.init(zones, "TimeFile.txt", 3);
 
@@ -169,13 +168,14 @@ void init()
     glPointSize(10.0f);
     tigl::shader->enableColor(true);
     tigl::shader->enableTexture(true);
-    timeTextBox = std::make_shared<TextBox>("---", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80), "fonts/Opensans.ttf");
+
+    timeTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.95f - 300, windowHeight * 0.02f), "fonts/Opensans.ttf");
 	textBoxes.push_back(timeTextBox);
-    messageTextBox = std::make_shared<TextBox>("---", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    messageTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.15f, windowHeight * 0.88f - 20), "fonts/Opensans.ttf");
     textBoxes.push_back(messageTextBox);
-    textBox3 = std::make_shared<TextBox>("---", glm::vec2(windowWidth -1000, 30), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    textBox3 = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.05f, windowHeight * 0.1f), "fonts/Opensans.ttf");
 	textBoxes.push_back(textBox3);
-	endGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth - 1000,300), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    endGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.5f - 100, windowHeight * 0.5f), "fonts/Opensans.ttf");
 	textBoxes.push_back(endGameTextBox);
 }
 
@@ -198,6 +198,7 @@ void update()
         o->update(elapsedTime);
     }
     textBox3->setText(std::to_string(car->position.x) + ", " + std::to_string(car->position.z));
+	endGameTextBox->setText("Press Z to start again");
 }
 
 void draw()
