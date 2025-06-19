@@ -174,6 +174,7 @@ void initGame()
     textBox3 = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.05f, windowHeight * 0.1f), "fonts/Opensans.ttf");
 	textBoxes.push_back(textBox3);
     endGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.5f - 100, windowHeight * 0.5f), "fonts/Opensans.ttf");
+
     glPointSize(10.0f);
 }
 
@@ -185,8 +186,7 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 void update()
 {
-    //bool gameContinues = checkPointManager.update(car->position, messageTextBox, timeTextBox, endGameTextBox, window);
-    bool gameContinues = true;
+    bool gameContinues = checkPointManager.update(car->position, messageTextBox, timeTextBox, endGameTextBox, window);
     if (!gameContinues)
     {
         return;
@@ -198,8 +198,9 @@ void update()
     float elapsedTime = static_cast<float>(currentTime - lastTime);
     lastTime = currentTime;
 
-
     textBox3->setText(std::to_string(car->position.x) + ", " + std::to_string(car->position.z));
+    scene.update(elapsedTime);
+
 }
 
 void draw()
