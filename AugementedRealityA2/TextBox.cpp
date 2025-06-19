@@ -61,6 +61,11 @@ void TextBox::draw()
 
     tigl::begin(GL_QUADS);
     for (char c : text) {
+        if (c == '\n') {
+            x = position.x + 10;
+            y += 30;
+            continue;
+        }
         if (c >= 32 && c < 128) {
             stbtt_GetBakedQuad(cdata, 512, 512, c - 32, &x, &y, &q, 1);
             tigl::addVertex(Vertex::PT(glm::vec3(q.x0, q.y0, 0), glm::vec2(q.s0, q.t0)));
