@@ -41,6 +41,6 @@ void KeyboardSteeringComponent::update(float elapsedTime)
 	}
 
 
-	std::cout << "Height (keyboard): " << height << std::endl;
-	std::cout << "Angle (keyboard): " << angle << std::endl;
+	/*std::cout << "Height (keyboard): " << height << std::endl;
+	std::cout << "Angle (keyboard): " << angle << std::endl;*/
 }
