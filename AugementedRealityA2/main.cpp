@@ -42,6 +42,7 @@ FpsCam* camera;
 ObjModel* circuit;
 std::vector<Zone> zones;
 std::vector<bool> checkpointsCrossed;
+double fastestLapTime = 0.0;
 
 std::list<std::shared_ptr<TextBox>> textBoxes;
 std::shared_ptr<TextBox> timeTextBox;
@@ -189,7 +190,7 @@ void update()
 {
     if (endGame)
     {
-        endGameTextBox->setText("Game Over! Press Z to start again.");
+        endGameTextBox->setText("Game Over! Press Z to start again.\nYour fastest lap was: " + std::to_string(fastestLapTime));
 		if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
 		{
 			endGame = false;
@@ -243,7 +244,7 @@ void update()
                         timing = false;
                         endGame = true;
                         completedLapsCount = 0;
-                        double fastestLapTime = (*std::min_element(lapTimes.begin(), lapTimes.end())).count();
+                        fastestLapTime = (*std::min_element(lapTimes.begin(), lapTimes.end())).count();
                         writeFile(fileName, fastestLapTime);
 						lapTimes.clear();
                     }
