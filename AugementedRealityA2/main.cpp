@@ -159,10 +159,10 @@ void update()
     static double lastTime = glfwGetTime();
     double currentTime = glfwGetTime();
     camera->update(window, player->position, player->rotation);
-    textBox3->setText(std::to_string(camera->position.x) + ", " + std::to_string(camera->position.z));
+    textBox3->setText(std::to_string(player->position.x) + ", " + std::to_string(player->position.z));
 
-	if (camera->position.x >= startLine1.x && camera->position.x <= startLine2.x &&
-        camera->position.z >= startLine1.z && camera->position.z <= startLine2.z)
+	if (player->position.x >= startLine1.x && player->position.x <= startLine2.x &&
+        player->position.z >= startLine1.z && player->position.z <= startLine2.z)
 	{
 		textBox2->setText("You are at the start line!");
         startTime = std::chrono::steady_clock::now();
@@ -190,14 +190,14 @@ void update()
         stream << std::fixed << std::setprecision(3) << elapsedTime.count();
         timeTextBox->setText("Time elapsed: " + stream.str() + " seconds");
     }
-	if (camera->position.x >= checkPoint1l.x && camera->position.x <= checkPoint1r.x &&
-        camera->position.z >= checkPoint1l.z && camera->position.z <= checkPoint1r.z)
+	if (player->position.x >= checkPoint1l.x && player->position.x <= checkPoint1r.x &&
+        player->position.z >= checkPoint1l.z && player->position.z <= checkPoint1r.z)
 	{
 		textBox2->setText("You are at checkpoint 1!");
         crossedCheckpoint1 = true;
 	}
-	if (camera->position.x >= checkPoint2l.x && camera->position.x <= checkPoint2r.x &&
-        camera->position.z >= checkPoint2l.z && camera->position.z <= checkPoint2r.z)
+	if (player->position.x >= checkPoint2l.x && player->position.x <= checkPoint2r.x &&
+        player->position.z >= checkPoint2l.z && player->position.z <= checkPoint2r.z)
 	{
 		textBox2->setText("You are at checkpoint 2!");
         crossedCheckpoint2 = true;
