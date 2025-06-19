@@ -1,41 +1,47 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include "tigl.h"
-#include "FpsCam.h"
-#include "ObjModel.h"
-#include "TextBox.h"
-#include "io_manager.h"
-
-#include "GameObject.h"
-#include "CubeComponent.h"
-#include "ModelComponent.h"
-#include "KeyboardSteeringComponent.h"
-#include "VisionSteeringComponent.h"
-#include "CarPhysicsComponent.h"
 #include <iostream>
-#include <glm/gtc/matrix_transform.hpp>
-#define STB_TRUETYPE_IMPLEMENTATION
-#include "stb_truetype.h"
+#include <list>
 #include <chrono>
 #include <iomanip>
 
-
-
-using tigl::Vertex;
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 #pragma comment(lib, "glfw3.lib")
 #pragma comment(lib, "glew32s.lib")
 #pragma comment(lib, "opengl32.lib")
 
+#include "tigl.h"
+#include "ObjModel.h"
+#include "io_manager.h"
+
+#include "GameObject.h"
+#include "CameraManager.h"
+#include "ModelComponent.h"
+#include "PerspectiveCameraComponent.h"
+#include "KeyboardSteeringComponent.h"
+#include "VisionSteeringComponent.h"
+#include "CarPhysicsComponent.h"
+#include "ChildComponent.h"
+
+#include "TextBox.h"
+
+using tigl::Vertex;
+
+
 GLFWwindow* window;
-FpsCam* camera;
-TextBox* timeTextBox;
-TextBox* textBox2;
-TextBox* textBox3;
+CameraManager* cameraManager;
+
+/* Dit blok hier moet echt weg*/
+TextBox* textBox;
 ObjModel* circuit;
 
 int windowHeight;
 int windowWidth;
+
+TextBox* timeTextBox;
+TextBox* textBox2;
+TextBox* textBox3;
 
 glm::vec3 startLine1(-6, 0, -1);
 glm::vec3 startLine2(6, 0, 1);
@@ -66,7 +72,7 @@ int main(void)
     if (!glfwInit())
         throw "Could not initialize glwf";
     int count;
-    window = glfwCreateWindow(1920, 1080, "Hello World", NULL, NULL);
+    window = glfwCreateWindow(1280, 720, "Race Game", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -90,8 +96,7 @@ int main(void)
 }
 
 std::list<std::shared_ptr<GameObject>> objects;
-std::shared_ptr<GameObject> player;
-
+std::shared_ptr<GameObject> car;
 
 void init()
 {
@@ -105,73 +110,97 @@ void init()
                 glfwSetWindowShouldClose(window, true);
         });
 
-    camera = new FpsCam(window, glm::vec3(0, -1, -10));
+    // Add car
+    car = std::make_shared<GameObject>();
+    car->position = glm::vec3(0, 0, 5);
+    car->addComponent(std::make_shared<ModelComponent>("models/car/carNoSteeringWheel.obj"));
+    car->addComponent(std::make_shared<CarPhysicsComponent>(15));
+    objects.push_back(car);
 
-    player = std::make_shared<GameObject>();
-    player->position = glm::vec3(0, 0, 20);
-    player->addComponent(std::make_shared<ModelComponent>("models/car/carNoWindow.obj"));
+    // Add Steering wheel
+    auto steeringWheel = std::make_shared<GameObject>();
+    steeringWheel->addComponent(std::make_shared<ModelComponent>("models/car/steeringWheel.obj"));
+    steeringWheel->addComponent(std::make_shared<ChildComponent>(car));
+    objects.push_back(steeringWheel);
 
-    // Keyboard steering wheel
-    player->addComponent(std::make_shared<KeyboardSteeringComponent>());
-
-    // Vision steering wheel
-	VideoCapture webCam(0);
-    VisionCalibration cal;
-
-    /// CALIBRATION ///
-
-   /* cal.addColor("Yellow");
-    cal.addColor("Blue");
-    
-    cal.capurePhoto(webCam);
-    cal.calibrate();
-    cal.save("calibration_settings.json");*/
-
-    /// LOADING IN ///
-    cal.load("calibration_settings.json");
-
-    player->addComponent(std::make_shared<VisionSteeringComponent>(webCam, cal.getColors()));
-
-    auto baseComponent = player->getComponent<Component>();
-  auto visionComponent = std::dynamic_pointer_cast<VisionSteeringComponent>(baseComponent);
-
-    if (visionComponent) {
-        visionComponent->setDebugMode(true);
-        visionComponent->setMinimalMarkerSize(50);
-    }
-
-    // Add more components
-
-	player->addComponent(std::make_shared<CarPhysicsComponent>());
-    objects.push_back(player);
-
-    tigl::shader->enableTexture(true);
-
-	auto circuit = std::make_shared<GameObject>();
-	circuit->position = glm::vec3(0, 0, 0);
-	circuit->addComponent(std::make_shared<ModelComponent>("models/circuit/circuit.obj"));
+    // Add circuit
+    auto circuit = std::make_shared<GameObject>();
+    circuit->position = glm::vec3(0, 0, 0);
+    circuit->addComponent(std::make_shared<ModelComponent>("models/circuit/circuit.obj"));
     objects.push_back(circuit);
 
-    timeTextBox = new TextBox("Hello", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80));
-	timeTextBox->loadFont("fonts/Opensans.ttf");
+    textBox = new TextBox("Hello", glm::vec2(1500, 50), glm::vec2(300, 80));
+    textBox->loadFont("fonts/Opensans.ttf");
 
-    textBox2 = new TextBox("Hello", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80));
+    timeTextBox = new TextBox("TimeTextBox", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80));
+    textBox->loadFont("fonts/Opensans.ttf");
+
+    textBox2 = new TextBox("Hello", glm::vec2(windowHeight - 300, 50), glm::vec2(300, 80));
     textBox2->loadFont("fonts/Opensans.ttf");
+    // Add Camera
+    auto camera = std::make_shared<GameObject>();
+    camera->addComponent(std::make_shared<ChildComponent>(car, glm::vec3{0.3, 1.25, 0}));
+    camera->addComponent(std::make_shared<PerspectiveCameraComponent>());
+    objects.push_back(camera);
+    cameraManager = new CameraManager(camera);
 
-    textBox3 = new TextBox("Hello", glm::vec2(windowHeight -1000, 10), glm::vec2(300, 80));
-    textBox3->loadFont("fonts/Opensans.ttf");
+    // Pick between vision and keyboard steering
+    bool useVision = false;
+    bool calibrateVision = false;
+
+    if (useVision)
+    {
+        VideoCapture webCam(0);
+        VisionCalibration cal;
+
+        if (calibrateVision)
+        {
+            cal.addColor("Yellow");
+            cal.addColor("Blue");
+
+            cal.capurePhoto(webCam);
+            cal.calibrate();
+            cal.save("calibration_settings.json");
+        }
+        else
+        {
+            cal.load("calibration_settings.json");
+        }
+        car->addComponent(std::make_shared<VisionSteeringComponent>(webCam, cal.getColors()));
+
+        auto baseComponent = car->getComponent<Component>();
+        auto visionComponent = std::dynamic_pointer_cast<VisionSteeringComponent>(baseComponent);
+
+        if (visionComponent) {
+            visionComponent->setDebugMode(true);
+            visionComponent->setMinimalMarkerSize(50);
+        }
+    } 
+    else
+    {
+        car->addComponent(std::make_shared<KeyboardSteeringComponent>());
+    }
+
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glPointSize(10.0f);
+    tigl::shader->enableColor(true);
+    tigl::shader->enableTexture(true);
 }
 
 void update()
 {
-    static double lastTime = glfwGetTime();
-    double currentTime = glfwGetTime();
-    camera->update(window, player->position, player->rotation);
-    textBox3->setText(std::to_string(player->position.x) + ", " + std::to_string(player->position.z));
+    //TODo deze logica moet hier echt uit
+    //static double lastTime = glfwGetTime();
+    //double currentTime = glfwGetTime();
+    //camera->update(window, car->position, car->rotation);
+    //textBox3->setText(std::to_string(car->position.x) + ", " + std::to_string(car->position.z));
 
     //if mag alleen 1 keer per seconden getriggerd worden
-	if (player->position.x >= startLine1.x && player->position.x <= startLine2.x &&
-        player->position.z >= startLine1.z && player->position.z <= startLine2.z &&
+	if (car->position.x >= startLine1.x && car->position.x <= startLine2.x &&
+        car->position.z >= startLine1.z && car->position.z <= startLine2.z &&
         std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - startTime).count() >= 1)
 	{
 		textBox2->setText("You are at the start line!");
@@ -204,28 +233,25 @@ void update()
         stream << std::fixed << std::setprecision(3) << elapsedTime.count();
         timeTextBox->setText("Time elapsed: " + stream.str() + " seconds");
     }
-	if (player->position.x >= checkPoint1l.x && player->position.x <= checkPoint1r.x &&
-        player->position.z >= checkPoint1l.z && player->position.z <= checkPoint1r.z)
+	if (car->position.x >= checkPoint1l.x && car->position.x <= checkPoint1r.x &&
+        car->position.z >= checkPoint1l.z && car->position.z <= checkPoint1r.z)
 	{
 		textBox2->setText("You are at checkpoint 1!");
         crossedCheckpoint1 = true;
 	}
-	if (player->position.x >= checkPoint2l.x && player->position.x <= checkPoint2r.x &&
-        player->position.z >= checkPoint2l.z && player->position.z <= checkPoint2r.z)
+	if (car->position.x >= checkPoint2l.x && car->position.x <= checkPoint2r.x &&
+        car->position.z >= checkPoint2l.z && car->position.z <= checkPoint2r.z)
 	{
 		textBox2->setText("You are at checkpoint 2!");
         crossedCheckpoint2 = true;
 	}
 
-    for (auto& o : objects)
-    {
-        o->update(0.01f);
-    }
-
+    // Deze logica niet!
+    static double lastTime = glfwGetTime();
+    double currentTime = glfwGetTime();
     float elapsedTime = static_cast<float>(currentTime - lastTime);
     lastTime = currentTime;
 
-    camera->update(window, player->position, player->rotation);
     for (auto& o : objects)
         o->update(elapsedTime);
 }
@@ -238,32 +264,22 @@ void draw()
 
     int viewport[4];
     glGetIntegerv(GL_VIEWPORT, viewport);
-    glm::mat4 projection = glm::perspective(glm::radians(75.0f), viewport[2] / (float)viewport[3], 0.01f, 200.0f);
-
-    tigl::shader->setProjectionMatrix(projection);
-    tigl::shader->setViewMatrix(camera->getMatrix());
+    float aspect = viewport[2] / (float)viewport[3];
+    
+    tigl::shader->setProjectionMatrix(cameraManager->getProjectionMatrix(aspect));
+    tigl::shader->setViewMatrix(cameraManager->getViewMatrix());
     tigl::shader->setModelMatrix(glm::mat4(1.0f));
-    tigl::shader->enableColor(true);
-
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glPointSize(10.0f);
-
+    
     for (auto& o : objects)
         o->draw();
 
-    // Text overlay
+    // Dit zou ook nog wel ergens anders kunnen
+    // Draw text/UI
     tigl::shader->setViewMatrix(glm::mat4(1.0f));
     glm::mat4 orthoProjection = glm::ortho(0.0f, (float)viewport[2], (float)viewport[3], 0.0f);
     tigl::shader->setProjectionMatrix(orthoProjection);
 
     timeTextBox->draw();
 	textBox2->draw();
-	textBox3->draw();
+	//textBox3->draw();
 }
-
-
-
