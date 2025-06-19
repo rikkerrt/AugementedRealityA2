@@ -29,54 +29,39 @@ void CarPhysicsComponent::update(float elapsedTime)
 	for (auto& physicsObject : physicsObjects) {
 		float radius = physicsObject->getComponent<PhysicsComponent>()->radius;
 		float distance = glm::length(gameObject->position - physicsObject->position);
-
-		float angle = glm::degrees(glm::atan(gameObject->position.z - physicsObject->position.z, gameObject->position.x - physicsObject->position.x) + glm::radians(90.0f)) + 180;
-
-		float twoPI = glm::pi<float>() * 2.0f;
-		float objAngle = glm::degrees(std::fmod(std::fmod(gameObject->rotation.y, twoPI) + twoPI, twoPI));
-
-		std::cout << "Collision with physics object detected at angle: " << angle << ", " << objAngle << " degrees" << std::endl;
 		
 		if (distance < radius) {
-			speed = 0.0f;
-			//std::cout << angle + glm::radians(90.0f) << ", " << angle - glm::radians(90.0f) << std::endl;
-			/*if (objAngle < angle + glm::radians(90.0f) && objAngle > angle - glm::radians(90.0f)) {
-				std::cout << "Collision with physics object detected!" << std::endl;
+			float angle = glm::degrees(glm::atan(gameObject->position.x - physicsObject->position.x, gameObject->position.z - physicsObject->position.z));
+			angle = glm::mod(angle + 360, 360.0f);
+
+			float objAngle = glm::degrees(gameObject->rotation.y);
+
+			float angleDiff = glm::mod(angle - objAngle + 540.0f, 360.0f) - 180.0f;
+			if (std::abs(angleDiff) < 90.0f) {
+				std::cout << "anglediff: " << angleDiff << ", " << angle << ", " << objAngle << std::endl;
 				speed = 0.0f;
+				break;
 			}
-			else {
-				std::cout << "No collision with physics object detected!" << std::endl;
-			}*/
-			//std::cout << "Collision with physics object detected!" << std::endl;
-			break;
-		}
-		else {
-			//std::cout << "No collision with physics object detected!" << std::endl;
 		}
 	}
 
 	// looks for road
 	std::list<BoundingBox*> roadBoxes = gameObject->sceneObject->getRoadBoxes();
-	bool ez = false;
+	bool onGrass = false;
 	for (auto& boundingBox : roadBoxes) {
 		if (-gameObject->position.x < boundingBox->tl.x && -gameObject->position.x > boundingBox->br.x &&
 			-gameObject->position.z < boundingBox->tl.y && -gameObject->position.z > boundingBox->br.y) {
 			//std::cout << "Collision with road detected!" << std::endl;
-			ez = true;
+			onGrass = true;
 			break;
 		}
 	}
 
-	if (!ez) {
-		//std::cout << "No collision with road detected!" << std::endl;
-		//std::cout << "Camera Position: " << gameObject->position.x << ", " << gameObject->position.z << std::endl;
+	if (!onGrass) {
 		speed = speed / 2;
 	}
 
 	gameObject->position.x += (float)cos(glm::radians(angle - 90)) * speed;
 	gameObject->position.z += (float)sin(glm::radians(angle - 90)) * speed;
-	// angle draaien fixen door de rotatie van de cubes hetzelfde te maken als de angle waar hij naartoe rijd
-	//gameObject->rotation.y = (angle / 90) * -1;
-	// angle to radian
-	gameObject->rotation.y = glm::radians(angle) * -1; // -1 because of the way the car is facing
+	gameObject->rotation.y = glm::radians(angle) * -1;
 }

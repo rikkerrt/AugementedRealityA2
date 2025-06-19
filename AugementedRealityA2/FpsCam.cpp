@@ -46,7 +46,7 @@ void FpsCam::update(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		move(180, 0.1f);
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-		move(90, 0.1f);
+		move(90, 1.0f);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		move(-90, 0.1f);
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)

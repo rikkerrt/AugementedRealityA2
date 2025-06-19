@@ -95,98 +95,34 @@ void init()
 void initWorld() {
     // ground layer
     auto groundLayer = std::make_shared<GameObject>();
-    groundLayer->position = glm::vec3(0, -0.2, 0);
+    groundLayer->position = glm::vec3(40, -0.2, 0);
     groundLayer->addComponent(std::make_shared<ModelComponent>("models/test/GroundLayer/GroundLayer.obj"));
     scene.addGameObject(groundLayer);
 
-    // road layer
-    auto road1 = std::make_shared<GameObject>();
-    road1->position = glm::vec3(0, 0, 0);
-    road1->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
-    scene.addRoadObject(road1, 1);
-
-    auto road2 = std::make_shared<GameObject>();
-    road2->position = glm::vec3(0, 0, 0);
-    road2->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
-    scene.addRoadObject(road2, 1);
-
-	for (int i = 0; i < 8; i++) {
-		auto road3 = std::make_shared<GameObject>();
-		road3->position = glm::vec3(0, 0, 0);
-		road3->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveRight.obj"));
-		scene.addRoadObject(road3, 2);
-	}
-
-    auto road4 = std::make_shared<GameObject>();
-    road4->position = glm::vec3(0, 0, 0);
-    road4->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
-    scene.addRoadObject(road4, 1);
-
-    auto road5 = std::make_shared<GameObject>();
-    road5->position = glm::vec3(0, 0, 0);
-    road5->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
-    scene.addRoadObject(road5, 1);
-
-    for (int i = 0; i < 8; i++) {
-        auto road6 = std::make_shared<GameObject>();
-        road6->position = glm::vec3(0, 0, 0);
-        road6->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveRight.obj"));
-        scene.addRoadObject(road6, 2);
-    }
-
-	for (int i = 0; i < 4; i++) {
-		auto road7 = std::make_shared<GameObject>();
-		road7->position = glm::vec3(0, 0, 0);
-		road7->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
-		scene.addRoadObject(road7, 1);
-	}
-
-    for (int i = 0; i < 8; i++) {
-        auto road8 = std::make_shared<GameObject>();
-        road8->position = glm::vec3(0, 0, 0);
-        road8->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveRight.obj"));
-        scene.addRoadObject(road8, 2);
-    }
-
-    auto road9 = std::make_shared<GameObject>();
-    road9->position = glm::vec3(0, 0, 0);
-    road9->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
-    scene.addRoadObject(road9, 1);
-
-    auto road10 = std::make_shared<GameObject>();
-    road10->position = glm::vec3(0, 0, 0);
-    road10->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
-    scene.addRoadObject(road10, 1);
-
-    for (int i = 0; i < 8; i++) {
-        auto road11 = std::make_shared<GameObject>();
-        road11->position = glm::vec3(0, 0, 0);
-        road11->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveRight.obj"));
-        scene.addRoadObject(road11, 2);
-    }
-
-	auto road12 = std::make_shared<GameObject>();
-	road12->position = glm::vec3(0, 0, 0);
-	road12->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
-	scene.addRoadObject(road12, 1);
-
-	auto road13 = std::make_shared<GameObject>();
-	road13->position = glm::vec3(0, 0, 0);
-	road13->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
-	scene.addRoadObject(road13, 1);
-
     // props
-    auto prop1 = std::make_shared<GameObject>();
-    prop1->position = glm::vec3(10, 0, 0);
-    prop1->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree1.obj"));
-	prop1->addComponent(std::make_shared<PhysicsComponent>(2.0f));
-    scene.addGameObject(prop1);
+    for (int i = 0; i < 100; ++i) {
+        bool OnRoad = true;
+		float randomFloatX, randomFloatZ;
+		while (OnRoad) {
+            randomFloatX = ((float)std::rand() / RAND_MAX) * 400.0f - 200.0f;
+            randomFloatZ = ((float)std::rand() / RAND_MAX) * 400.0f - 200.0f;
 
-    /*auto prop2 = std::make_shared<GameObject>();
-    prop2->position = glm::vec3(-10, 0, 0);
-    prop2->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree1.obj"));
-	prop2->addComponent(std::make_shared<PhysicsComponent>(2.0f));
-    scene.addGameObject(prop2);*/
+			std::list<BoundingBox*> roadBoxes = scene.getRoadBoxes();
+			for (auto& boundingBox : roadBoxes) {
+				if (randomFloatX < boundingBox->tl.x && randomFloatX > boundingBox->br.x &&
+					randomFloatZ < boundingBox->tl.y && randomFloatZ > boundingBox->br.y) {
+					OnRoad = true;
+                    break;
+				}
+				OnRoad = false;
+			}
+		}
+
+        auto prop = std::make_shared<GameObject>();
+        prop->position = glm::vec3(randomFloatX, 0, randomFloatZ);
+        prop->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree1.obj"));
+		scene.addGameObject(prop);
+    }
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -213,12 +149,12 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		scene.addRoadObject(straight4, 3);
 	}
 
-    if (key == GLFW_KEY_K && action == GLFW_PRESS) {
+    /*if (key == GLFW_KEY_K && action == GLFW_PRESS) {
         auto sectorStraight = std::make_shared<GameObject>();
         sectorStraight->position = glm::vec3(0, 0, 0);
         sectorStraight->addComponent(std::make_shared<ModelComponent>("models/test/timing/SectorStraight.obj"));
         scene.addRoadObject(sectorStraight,5);
-    }
+    }*/
 }
 
 
