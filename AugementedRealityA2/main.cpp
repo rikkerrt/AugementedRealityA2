@@ -14,7 +14,7 @@
 #include "tigl.h"
 #include "ObjModel.h"
 #include "io_manager.h"
-
+#include "CheckPointManager.h"
 #include "GameObject.h"
 #include "CameraManager.h"
 #include "ModelComponent.h"
@@ -25,7 +25,6 @@
 #include "ChildComponent.h"
 
 #include "TextBox.h"
-
 using tigl::Vertex;
 
 
@@ -34,34 +33,21 @@ CameraManager* cameraManager;
 
 /* Dit blok hier moet echt weg*/
 TextBox* textBox;
+FpsCam* camera;
 ObjModel* circuit;
+CheckPointManager checkPointManager;
+
+std::list<std::shared_ptr<TextBox>> textBoxes;
+std::shared_ptr<TextBox> timeTextBox;
+std::shared_ptr<TextBox> textBox2;
+std::shared_ptr<TextBox> textBox3;
+std::shared_ptr<TextBox> endGameTextBox;
+
+std::list<std::shared_ptr<GameObject>> objects;
+std::shared_ptr<GameObject> player;
 
 int windowHeight;
 int windowWidth;
-
-TextBox* timeTextBox;
-TextBox* textBox2;
-TextBox* textBox3;
-
-glm::vec3 startLine1(-6, 0, -1);
-glm::vec3 startLine2(6, 0, 1);
-glm::vec3 checkPoint1l(59, 0, 84);
-glm::vec3 checkPoint1r(72, 0, 86);
-glm::vec3 checkPoint2l(95, 0, 0);
-glm::vec3 checkPoint2r(107, 0, 2);
-
-bool crossedCheckpoint1 = false;
-bool crossedCheckpoint2 = false;
-int completedLapsCount = 0;
-int maxLaps = 3;
-
-string fileName = "TimeFile.txt";
-
-std::chrono::steady_clock::time_point startTime;
-std::chrono::duration<double> elapsedTime;
-std::vector<std::chrono::duration<double>> lapTimes;
-
-bool timing = false;
 
 void init();
 void update();
@@ -109,6 +95,13 @@ void init()
             if (key == GLFW_KEY_ESCAPE)
                 glfwSetWindowShouldClose(window, true);
         });
+
+    std::vector<Zone> zones = {
+    {{-6, 0, -1}, {6, 0, 1}, ZoneType::Start},
+    {{59, 0, 84}, {72, 0, 86}, ZoneType::Checkpoint},
+    {{95, 0, 0}, {107, 0, 2}, ZoneType::Checkpoint}
+    };
+    checkPointManager.init(zones, "TimeFile.txt", 3);
 
     // Add car
     car = std::make_shared<GameObject>();
@@ -188,59 +181,31 @@ void init()
     glPointSize(10.0f);
     tigl::shader->enableColor(true);
     tigl::shader->enableTexture(true);
+    timeTextBox = std::make_shared<TextBox>("---", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80), "fonts/Opensans.ttf");
+	textBoxes.push_back(timeTextBox);
+    textBox2 = std::make_shared<TextBox>("---", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    textBoxes.push_back(textBox2);
+    textBox3 = std::make_shared<TextBox>("---", glm::vec2(windowHeight -1000, 10), glm::vec2(300, 80), "fonts/Opensans.ttf");
+	textBoxes.push_back(textBox3);
+	endGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth - 1000,300), glm::vec2(300, 80), "fonts/Opensans.ttf");
+	textBoxes.push_back(endGameTextBox);
 }
 
 void update()
 {
-    //TODo deze logica moet hier echt uit
-    //static double lastTime = glfwGetTime();
-    //double currentTime = glfwGetTime();
-    //camera->update(window, car->position, car->rotation);
-    //textBox3->setText(std::to_string(car->position.x) + ", " + std::to_string(car->position.z));
-
-    //if mag alleen 1 keer per seconden getriggerd worden
-	if (car->position.x >= startLine1.x && car->position.x <= startLine2.x &&
-        car->position.z >= startLine1.z && car->position.z <= startLine2.z &&
-        std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - startTime).count() >= 1)
-	{
-		textBox2->setText("You are at the start line!");
-        startTime = std::chrono::steady_clock::now();
-        timing = true;
-
-        if (crossedCheckpoint1 && crossedCheckpoint2)
-        {
-            completedLapsCount++;
-            textBox2->setText("You have completed " + std::to_string(completedLapsCount) + " laps!");
-			lapTimes.push_back(elapsedTime);
-        }
-        if (completedLapsCount == maxLaps)
-        {
-            //stop game
-            timing = false;
-            completedLapsCount = 0;
-
-            double maxLapTime = (*std::max_element(lapTimes.begin(), lapTimes.end())).count();
-			writeFile(fileName, maxLapTime);          
-        }
-
-        crossedCheckpoint1 = false;
-        crossedCheckpoint2 = false;
-	}
-    if (timing)
+    bool gameContinues = checkPointManager.update(player->position, textBox2, timeTextBox, endGameTextBox, window);
+    if (!gameContinues)
     {
-        elapsedTime = std::chrono::steady_clock::now() - startTime;
-        std::ostringstream stream;
-        stream << std::fixed << std::setprecision(3) << elapsedTime.count();
-        timeTextBox->setText("Time elapsed: " + stream.str() + " seconds");
+        return;
     }
-	if (car->position.x >= checkPoint1l.x && car->position.x <= checkPoint1r.x &&
-        car->position.z >= checkPoint1l.z && car->position.z <= checkPoint1r.z)
+	if (player->position.x >= checkPoint1l.x && player->position.x <= checkPoint1r.x &&
+        player->position.z >= checkPoint1l.z && player->position.z <= checkPoint1r.z)
 	{
 		textBox2->setText("You are at checkpoint 1!");
         crossedCheckpoint1 = true;
 	}
-	if (car->position.x >= checkPoint2l.x && car->position.x <= checkPoint2r.x &&
-        car->position.z >= checkPoint2l.z && car->position.z <= checkPoint2r.z)
+	if (player->position.x >= checkPoint2l.x && player->position.x <= checkPoint2r.x &&
+        player->position.z >= checkPoint2l.z && player->position.z <= checkPoint2r.z)
 	{
 		textBox2->setText("You are at checkpoint 2!");
         crossedCheckpoint2 = true;
@@ -253,9 +218,14 @@ void update()
     lastTime = currentTime;
 
     for (auto& o : objects)
+    {
         o->update(elapsedTime);
-}
+    }
 
+    camera->update(window, player->position, player->rotation);
+
+    textBox3->setText(std::to_string(player->position.x) + ", " + std::to_string(player->position.z));
+}
 
 void draw()
 {
@@ -279,7 +249,8 @@ void draw()
     glm::mat4 orthoProjection = glm::ortho(0.0f, (float)viewport[2], (float)viewport[3], 0.0f);
     tigl::shader->setProjectionMatrix(orthoProjection);
 
-    timeTextBox->draw();
-	textBox2->draw();
-	//textBox3->draw();
+	for (auto& textBox : textBoxes)
+	{
+		textBox->draw();
+	}
 }
