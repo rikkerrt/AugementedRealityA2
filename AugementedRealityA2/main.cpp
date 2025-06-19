@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <fstream>
 #include <sstream>
+#include <random>
 #include "tigl.h"
 #include "FpsCam.h"
 #include "ObjModel.h"
@@ -51,7 +52,7 @@ int main(void)
     tigl::init();
 
     init();
-    buildTrackFromFile("models/Circuit/Circuitvolgorde.txt");
+    
 
     while (!glfwWindowShouldClose(window))
     {
@@ -89,6 +90,7 @@ void init()
 	player->addComponent(std::make_shared<CarPhysicsComponent>());
     scene.addGameObject(player);
 
+    buildTrackFromFile("models/Circuit/Circuitvolgorde.txt");
 	initWorld();
 }
 
@@ -100,28 +102,42 @@ void initWorld() {
     scene.addGameObject(groundLayer);
 
     // props
-    for (int i = 0; i < 100; ++i) {
-        bool OnRoad = true;
+    for (int i = 0; i < 25; ++i) {
+        bool OnRoad = false;
+        bool running = true;
 		float randomFloatX, randomFloatZ;
-		while (OnRoad) {
-            randomFloatX = ((float)std::rand() / RAND_MAX) * 400.0f - 200.0f;
-            randomFloatZ = ((float)std::rand() / RAND_MAX) * 400.0f - 200.0f;
 
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<float> dist(-200.0f, 200.0f);
+
+		while (running) {
+            randomFloatX = dist(gen);
+            randomFloatZ = dist(gen);
+            std::cout << randomFloatX << randomFloatZ << std::endl;
+            
 			std::list<BoundingBox*> roadBoxes = scene.getRoadBoxes();
 			for (auto& boundingBox : roadBoxes) {
 				if (randomFloatX < boundingBox->tl.x && randomFloatX > boundingBox->br.x &&
 					randomFloatZ < boundingBox->tl.y && randomFloatZ > boundingBox->br.y) {
 					OnRoad = true;
+                    std::cout << "Inside for loop" << i << std::endl;
                     break;
-				}
-				OnRoad = false;
-			}
+                }
+		    }
+            if (!OnRoad)
+            {
+                OnRoad = false;
+                running = false;
+                std::cout << "Outside if statement" << i << std::endl;
+            }
 		}
-
-        auto prop = std::make_shared<GameObject>();
-        prop->position = glm::vec3(randomFloatX, 0, randomFloatZ);
-        prop->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree1.obj"));
-		scene.addGameObject(prop);
+  
+         auto prop = std::make_shared<GameObject>();
+         prop->position = glm::vec3(randomFloatX, 0, randomFloatZ);
+         prop->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree1.obj"));
+         scene.addGameObject(prop);
+   
     }
 }
 

@@ -141,7 +141,7 @@ void SceneObject::draw(const glm::mat4& parentMatrix)
 	std::vector<tigl::Vertex> verts;
 	std::list<BoundingBox*> roadBoxes = getRoadBoxes();
 
-	/*tigl::shader->setModelMatrix(glm::mat4(1.0f));
+	tigl::shader->setModelMatrix(glm::mat4(1.0f));
 	for (auto& roadBox : roadBoxes) {
 		verts.push_back(tigl::Vertex::P(glm::vec3(-roadBox->tl.x, 5.0f, -roadBox->tl.y)));
 		verts.push_back(tigl::Vertex::P(glm::vec3(-roadBox->br.x, 5.0f, -roadBox->tl.y)));
@@ -149,5 +149,5 @@ void SceneObject::draw(const glm::mat4& parentMatrix)
 		verts.push_back(tigl::Vertex::P(glm::vec3(-roadBox->tl.x, 5.0f, -roadBox->br.y)));
 	}
 
-	tigl::drawVertices(GL_QUADS, verts);*/
+	tigl::drawVertices(GL_QUADS, verts);
 }
