@@ -66,6 +66,9 @@
     <ClCompile Include="RoadComponent.cpp">
       <Filter>components</Filter>
     </ClCompile>
+    <ClCompile Include="MapLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tigl.h">
@@ -112,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="RoadComponent.h">
       <Filter>components</Filter>
+    </ClInclude>
+    <ClInclude Include="MapLoader.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -38,7 +38,6 @@ void CarPhysicsComponent::update(float elapsedTime)
 
 			float angleDiff = glm::mod(angle - objAngle + 540.0f, 360.0f) - 180.0f;
 			if (std::abs(angleDiff) < 90.0f) {
-				std::cout << "anglediff: " << angleDiff << ", " << angle << ", " << objAngle << std::endl;
 				speed = 0.0f;
 				break;
 			}
@@ -51,7 +50,6 @@ void CarPhysicsComponent::update(float elapsedTime)
 	for (auto& boundingBox : roadBoxes) {
 		if (-gameObject->position.x < boundingBox->tl.x && -gameObject->position.x > boundingBox->br.x &&
 			-gameObject->position.z < boundingBox->tl.y && -gameObject->position.z > boundingBox->br.y) {
-			//std::cout << "Collision with road detected!" << std::endl;
 			onGrass = true;
 			break;
 		}

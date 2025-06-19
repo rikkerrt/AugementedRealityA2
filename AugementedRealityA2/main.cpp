@@ -18,6 +18,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "RoadComponent.h"
+#include "MapLoader.h"
 using tigl::Vertex;
 
 #pragma comment(lib, "glfw3.lib")
@@ -34,7 +35,6 @@ void initWorld();
 void update();
 void draw();
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-void buildTrackFromFile(const std::string& filename);
 
 int main(void)
 {
@@ -90,86 +90,13 @@ void init()
 	player->addComponent(std::make_shared<CarPhysicsComponent>());
     scene.addGameObject(player);
 
-    buildTrackFromFile("models/Circuit/Circuitvolgorde.txt");
-	initWorld();
-}
-
-void initWorld() {
-    // ground layer
-    auto groundLayer = std::make_shared<GameObject>();
-    groundLayer->position = glm::vec3(40, -0.2, 0);
-    groundLayer->addComponent(std::make_shared<ModelComponent>("models/test/GroundLayer/GroundLayer.obj"));
-    scene.addGameObject(groundLayer);
-
-    // props
-    for (int i = 0; i < 25; ++i) {
-        bool OnRoad = false;
-        bool running = true;
-		float randomFloatX, randomFloatZ;
-
-        std::random_device rd;
-        std::mt19937 gen(rd());
-        std::uniform_real_distribution<float> dist(-200.0f, 200.0f);
-        std::uniform_int_distribution<int> distInt(1, 3);
-
-		while (running) {
-            randomFloatX = dist(gen);
-            randomFloatZ = dist(gen);
-            std::cout << randomFloatX << randomFloatZ << std::endl;
-
-			std::list<BoundingBox*> roadBoxes = scene.getRoadBoxes();
-			for (auto& boundingBox : roadBoxes) {
-				if (-randomFloatX < boundingBox->tl.x && -randomFloatX > boundingBox->br.x &&
-					-randomFloatZ < boundingBox->tl.y && -randomFloatZ > boundingBox->br.y) {
-					OnRoad = true;
-                    std::cout << "Inside for loop" << i << std::endl;
-                    break;
-                }
-		    }
-            if (!OnRoad)
-            {
-                running = false;
-                std::cout << "Outside if statement" << i << std::endl;
-            }
-            OnRoad = false;
-		}
-        auto prop = std::make_shared<GameObject>();
-        prop->position = glm::vec3(randomFloatX, 0, randomFloatZ);
-        prop->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree" + std::to_string(distInt(gen)) + ".obj"));
-        scene.addGameObject(prop);
-    }
+    loadMap(&scene);
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-	if (key == GLFW_KEY_V && action == GLFW_PRESS) {
-		auto straight3 = std::make_shared<GameObject>();
-		straight3->position = glm::vec3(0, 0, 0);
-		straight3->addComponent(std::make_shared<ModelComponent>("models/test/straight/curve.obj"));
-		scene.addRoadObject(straight3, 1);
-	}
-	if (key == GLFW_KEY_B && action == GLFW_PRESS) {
-		auto straight2 = std::make_shared<GameObject>();
-		straight2->position = glm::vec3(0, 0, 0);
-		straight2->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveRight.obj"));
-		scene.addRoadObject(straight2, 2);
-	}
-
-	if (key == GLFW_KEY_C && action == GLFW_PRESS) {
-		auto straight4 = std::make_shared<GameObject>();
-		straight4->position = glm::vec3(0, 0, 0);
-		straight4->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveLeft.obj"));
-		scene.addRoadObject(straight4, 3);
-	}
-
-    /*if (key == GLFW_KEY_K && action == GLFW_PRESS) {
-        auto sectorStraight = std::make_shared<GameObject>();
-        sectorStraight->position = glm::vec3(0, 0, 0);
-        sectorStraight->addComponent(std::make_shared<ModelComponent>("models/test/timing/SectorStraight.obj"));
-        scene.addRoadObject(sectorStraight,5);
-    }*/
 }
 
 
@@ -177,21 +104,6 @@ void update()
 {
     camera->update(window);
 	scene.update(0.01f);
-
- //   std::list<BoundingBox*> roadBoxes = scene.getRoadBoxes();
-	//bool ez = false;
- //   for (auto& boundingBox : roadBoxes) {
- //       if (camera->position.x < boundingBox->tl.x && camera->position.x > boundingBox->br.x &&
- //           camera->position.z < boundingBox->tl.y && camera->position.z > boundingBox->br.y) {
- //           std::cout << "Collision with road detected!" << std::endl;
-	//		ez = true;
- //           return; // Collision detected, stop the car
- //       }
- //   }
- //   if (!ez) {
- //       std::cout << "No collision with road detected!" << std::endl;
- //       std::cout << "Camera Position: " << camera->position.x << ", " << camera->position.z << std::endl;
- //   }
 }
 
 void draw()
@@ -215,47 +127,4 @@ void draw()
     glPointSize(10.0f);
 
 	scene.draw();
-}
-
-void buildTrackFromFile(const std::string& filename) 
-{
-    std::ifstream infile(filename);
-    if (!infile.is_open()) {
-        std::cerr << "Kon baanbestand niet openen: " << filename << std::endl;
-        return;
-    }
-
-    std::string line;
-    std::getline(infile, line);
-    infile.close();
-
-    std::stringstream ss(line);
-    std::string token;
-
-    while (std::getline(ss, token, ',')) {
-        int segmentType = std::stoi(token);
-        auto segment = std::make_shared<GameObject>();
-        segment->position = glm::vec3(0, 0, 0);
-
-        if (segmentType == 1) {
-            segment->addComponent(std::make_shared<ModelComponent>("models/test/straight/curve.obj"));
-            scene.addRoadObject(segment, 1);
-        }
-        else if (segmentType == 2) {
-            segment->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveRight.obj"));
-            scene.addRoadObject(segment, 2);
-        }
-        else if (segmentType == 3) {
-            segment->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveLeft.obj"));
-            scene.addRoadObject(segment, 3);
-        }
-        else if (segmentType == 4) {
-            segment->addComponent(std::make_shared<ModelComponent>("models/test/timing/StartFinish.obj"));
-            scene.addRoadObject(segment, 4);
-        }
-        else if (segmentType == 5) {
-            segment->addComponent(std::make_shared<ModelComponent>("models/test/timing/SectorStraight.obj"));
-            scene.addRoadObject(segment, 5);
-        }
-    }
 }
