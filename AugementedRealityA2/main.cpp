@@ -10,6 +10,7 @@
 #include "ModelComponent.h"
 #include "KeyboardSteeringComponent.h"
 #include "CarPhysicsComponent.h"
+#include "PhysicsComponent.h"
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -26,6 +27,7 @@ ObjModel* circuit;
 SceneObject scene;
 
 void init();
+void initWorld();
 void update();
 void draw();
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
@@ -76,37 +78,111 @@ void init()
 
     scene = SceneObject();
 
-    /*auto player = std::make_shared<GameObject>();
+    auto player = std::make_shared<GameObject>();
     player->position = glm::vec3(0, 0, 5);
     player->addComponent(std::make_shared<ModelComponent>("models/car/carNoWindow.obj"));
 	player->addComponent(std::make_shared<KeyboardSteeringComponent>());
 	player->addComponent(std::make_shared<CarPhysicsComponent>());
     scene.addGameObject(player);
 
-	auto circuit = std::make_shared<GameObject>();
-	circuit->position = glm::vec3(0, 0, 0);
-	circuit->addComponent(std::make_shared<ModelComponent>("models/circuit/circuit.obj"));
-    scene.addGameObject(circuit);*/
+	initWorld();
+}
 
+void initWorld() {
+    // ground layer
     auto groundLayer = std::make_shared<GameObject>();
     groundLayer->position = glm::vec3(0, -0.2, 0);
     groundLayer->addComponent(std::make_shared<ModelComponent>("models/test/GroundLayer/GroundLayer.obj"));
     scene.addGameObject(groundLayer);
 
-    auto straight2 = std::make_shared<GameObject>();
-    straight2->position = glm::vec3(0, 0, 0);
-    straight2->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
-    scene.addRoadObject(straight2, 1);
+    // road layer
+    auto road1 = std::make_shared<GameObject>();
+    road1->position = glm::vec3(0, 0, 0);
+    road1->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
+    scene.addRoadObject(road1, 1);
 
-	/*auto straight1 = std::make_shared<GameObject>();
-	straight1->position = glm::vec3(0, 0, 0);
-	straight1->addComponent(std::make_shared<ModelComponent>("models/test/timing/StartFinish.obj"));
-	scene.addRoadObject(straight1, 4);*/
+    auto road2 = std::make_shared<GameObject>();
+    road2->position = glm::vec3(0, 0, 0);
+    road2->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
+    scene.addRoadObject(road2, 1);
 
-	auto prop = std::make_shared<GameObject>();
-	prop->position = glm::vec3(0, 0, 0);
-	prop->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree1.obj"));
-	scene.addGameObject(prop);
+	for (int i = 0; i < 8; i++) {
+		auto road3 = std::make_shared<GameObject>();
+		road3->position = glm::vec3(0, 0, 0);
+		road3->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveRight.obj"));
+		scene.addRoadObject(road3, 2);
+	}
+
+    auto road4 = std::make_shared<GameObject>();
+    road4->position = glm::vec3(0, 0, 0);
+    road4->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
+    scene.addRoadObject(road4, 1);
+
+    auto road5 = std::make_shared<GameObject>();
+    road5->position = glm::vec3(0, 0, 0);
+    road5->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
+    scene.addRoadObject(road5, 1);
+
+    for (int i = 0; i < 8; i++) {
+        auto road6 = std::make_shared<GameObject>();
+        road6->position = glm::vec3(0, 0, 0);
+        road6->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveRight.obj"));
+        scene.addRoadObject(road6, 2);
+    }
+
+	for (int i = 0; i < 4; i++) {
+		auto road7 = std::make_shared<GameObject>();
+		road7->position = glm::vec3(0, 0, 0);
+		road7->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
+		scene.addRoadObject(road7, 1);
+	}
+
+    for (int i = 0; i < 8; i++) {
+        auto road8 = std::make_shared<GameObject>();
+        road8->position = glm::vec3(0, 0, 0);
+        road8->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveRight.obj"));
+        scene.addRoadObject(road8, 2);
+    }
+
+    auto road9 = std::make_shared<GameObject>();
+    road9->position = glm::vec3(0, 0, 0);
+    road9->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
+    scene.addRoadObject(road9, 1);
+
+    auto road10 = std::make_shared<GameObject>();
+    road10->position = glm::vec3(0, 0, 0);
+    road10->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
+    scene.addRoadObject(road10, 1);
+
+    for (int i = 0; i < 8; i++) {
+        auto road11 = std::make_shared<GameObject>();
+        road11->position = glm::vec3(0, 0, 0);
+        road11->addComponent(std::make_shared<ModelComponent>("models/test/corner/CurveRight.obj"));
+        scene.addRoadObject(road11, 2);
+    }
+
+	auto road12 = std::make_shared<GameObject>();
+	road12->position = glm::vec3(0, 0, 0);
+	road12->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
+	scene.addRoadObject(road12, 1);
+
+	auto road13 = std::make_shared<GameObject>();
+	road13->position = glm::vec3(0, 0, 0);
+	road13->addComponent(std::make_shared<ModelComponent>("models/test/straight/Curve.obj"));
+	scene.addRoadObject(road13, 1);
+
+    // props
+    auto prop1 = std::make_shared<GameObject>();
+    prop1->position = glm::vec3(10, 0, 0);
+    prop1->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree1.obj"));
+	prop1->addComponent(std::make_shared<PhysicsComponent>(2.0f));
+    scene.addGameObject(prop1);
+
+    /*auto prop2 = std::make_shared<GameObject>();
+    prop2->position = glm::vec3(-10, 0, 0);
+    prop2->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree1.obj"));
+	prop2->addComponent(std::make_shared<PhysicsComponent>(2.0f));
+    scene.addGameObject(prop2);*/
 }
 
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -140,20 +216,20 @@ void update()
     camera->update(window);
 	scene.update(0.01f);
 
-    std::list<BoundingBox*> roadBoxes = scene.getRoadBoxes();
-	bool ez = false;
-    for (auto& boundingBox : roadBoxes) {
-        if (camera->position.x < boundingBox->tl.x && camera->position.x > boundingBox->br.x &&
-            camera->position.z < boundingBox->tl.y && camera->position.z > boundingBox->br.y) {
-            std::cout << "Collision with road detected!" << std::endl;
-			ez = true;
-            return; // Collision detected, stop the car
-        }
-    }
-    if (!ez) {
-        std::cout << "No collision with road detected!" << std::endl;
-        std::cout << "Camera Position: " << camera->position.x << ", " << camera->position.z << std::endl;
-    }
+ //   std::list<BoundingBox*> roadBoxes = scene.getRoadBoxes();
+	//bool ez = false;
+ //   for (auto& boundingBox : roadBoxes) {
+ //       if (camera->position.x < boundingBox->tl.x && camera->position.x > boundingBox->br.x &&
+ //           camera->position.z < boundingBox->tl.y && camera->position.z > boundingBox->br.y) {
+ //           std::cout << "Collision with road detected!" << std::endl;
+	//		ez = true;
+ //           return; // Collision detected, stop the car
+ //       }
+ //   }
+ //   if (!ez) {
+ //       std::cout << "No collision with road detected!" << std::endl;
+ //       std::cout << "Camera Position: " << camera->position.x << ", " << camera->position.z << std::endl;
+ //   }
 }
 
 void draw()
