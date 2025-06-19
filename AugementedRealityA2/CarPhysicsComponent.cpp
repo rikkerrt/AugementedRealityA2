@@ -25,7 +25,5 @@ void CarPhysicsComponent::update(float elapsedTime)
     // Movement based on rotation
     gameObject->position.x -= sin(gameObject->rotation.y) * currentSpeed * elapsedTime;
     gameObject->position.z -= cos(gameObject->rotation.y) * currentSpeed * elapsedTime;
-
-
 }
 

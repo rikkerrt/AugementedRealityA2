@@ -21,7 +21,7 @@ struct Zone {
 
 class CheckPointManager {
 public:
-    void init(std::vector<Zone> zones, std::string filename, int maxLaps);
+    void init(std::vector<Zone>& zones, std::string filename, int maxLaps);
     bool update(const glm::vec3& position, std::shared_ptr<TextBox> messageBox,
         std::shared_ptr<TextBox> timeBox, std::shared_ptr<TextBox> endBox,
         GLFWwindow* window);
@@ -33,6 +33,7 @@ private:
     std::vector<bool> checkpointsCrossed;
     int completedLaps = 0;
     int maxLaps = 3;
+    int updateCoolDown = 1;
     bool timing = false;
     bool endGame = false;
 	std::string fileName;

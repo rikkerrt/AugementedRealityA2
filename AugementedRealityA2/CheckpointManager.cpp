@@ -1,19 +1,24 @@
 #include "CheckPointManager.h"
 #include <algorithm>
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 #include "io_manager.h"
 
-void CheckPointManager::init(std::vector<Zone> checkPointZones, std::string fileName, int maxLaps)
+void CheckPointManager::init(std::vector<Zone>& checkPointZones, std::string fileName, int maxLaps)
 {
     zones = checkPointZones;
 	this->fileName = fileName;
 	this->maxLaps = maxLaps;
 
     int index = 0;
-    for (auto& zone : zones) {
-        if (zone.type == ZoneType::Checkpoint)
+    for (auto& zone : zones)
+    {
+        if (zone.type == ZoneType::Checkpoint) 
+        {
             zone.index = index++;
+            std::cout << "Zone " << std::endl;
+        }
     }
 
     checkpointsCrossed = std::vector<bool>(index, false);
@@ -43,11 +48,13 @@ bool CheckPointManager::update(const glm::vec3& position, std::shared_ptr<TextBo
     for (const auto& zone : zones) {
         if (position.x >= zone.min.x && position.x <= zone.max.x &&
             position.z >= zone.min.z && position.z <= zone.max.z) {
+            std::cout << "Zone index: " << zone.index << std::endl;
             if (zone.type == ZoneType::Start) {
                 handleStartZone(messageBox, endBox);
             }
             else if (zone.type == ZoneType::Checkpoint && zone.index >= 0 &&
                 zone.index < checkpointsCrossed.size() && !checkpointsCrossed[zone.index]) {
+                std::cout << "checkpoint " << std::endl;
                 handleCheckpointZone(zone.index, messageBox);
             }
         }
@@ -57,7 +64,7 @@ bool CheckPointManager::update(const glm::vec3& position, std::shared_ptr<TextBo
 
 void CheckPointManager::handleStartZone(std::shared_ptr<TextBox> messageBox, std::shared_ptr<TextBox> endBox)
 {
-    if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - startTime).count() >= 1) {
+    if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - startTime).count() >= updateCoolDown) {
         messageBox->setText("You are at the start line!");
         startTime = std::chrono::steady_clock::now();
         timing = true;

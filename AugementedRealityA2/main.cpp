@@ -32,18 +32,16 @@ GLFWwindow* window;
 CameraManager* cameraManager;
 
 /* Dit blok hier moet echt weg*/
-TextBox* textBox;
 ObjModel* circuit;
 CheckPointManager checkPointManager;
 
 std::list<std::shared_ptr<TextBox>> textBoxes;
 std::shared_ptr<TextBox> timeTextBox;
-std::shared_ptr<TextBox> textBox2;
+std::shared_ptr<TextBox> messageTextBox;
 std::shared_ptr<TextBox> textBox3;
 std::shared_ptr<TextBox> endGameTextBox;
 
 std::list<std::shared_ptr<GameObject>> objects;
-//std::shared_ptr<GameObject> car;
 std::shared_ptr<GameObject> car;
 
 
@@ -96,8 +94,9 @@ void init()
 
     std::vector<Zone> zones = {
     {{-6, 0, -1}, {6, 0, 1}, ZoneType::Start},
-    {{59, 0, 84}, {72, 0, 86}, ZoneType::Checkpoint},
-    {{95, 0, 0}, {107, 0, 2}, ZoneType::Checkpoint}
+    {{-72, 0, -86}, {-59, 0, -84}, ZoneType::Checkpoint},
+    {{-107, 0, -2}, {-95, 0, 0}, ZoneType::Checkpoint},
+	{{-6, 0, -42}, {6, 0, -40}, ZoneType::Checkpoint}
     };
     checkPointManager.init(zones, "TimeFile.txt", 3);
 
@@ -172,9 +171,9 @@ void init()
     tigl::shader->enableTexture(true);
     timeTextBox = std::make_shared<TextBox>("---", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80), "fonts/Opensans.ttf");
 	textBoxes.push_back(timeTextBox);
-    textBox2 = std::make_shared<TextBox>("---", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80), "fonts/Opensans.ttf");
-    textBoxes.push_back(textBox2);
-    textBox3 = std::make_shared<TextBox>("---", glm::vec2(windowHeight -1000, 10), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    messageTextBox = std::make_shared<TextBox>("---", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80), "fonts/Opensans.ttf");
+    textBoxes.push_back(messageTextBox);
+    textBox3 = std::make_shared<TextBox>("---", glm::vec2(windowWidth -1000, 30), glm::vec2(300, 80), "fonts/Opensans.ttf");
 	textBoxes.push_back(textBox3);
 	endGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth - 1000,300), glm::vec2(300, 80), "fonts/Opensans.ttf");
 	textBoxes.push_back(endGameTextBox);
@@ -182,7 +181,7 @@ void init()
 
 void update()
 {
-    bool gameContinues = checkPointManager.update(car->position, textBox2, timeTextBox, endGameTextBox, window);
+    bool gameContinues = checkPointManager.update(car->position, messageTextBox, timeTextBox, endGameTextBox, window);
     if (!gameContinues)
     {
         return;
