@@ -102,7 +102,7 @@ void initWorld() {
     scene.addGameObject(groundLayer);
 
     // props
-    for (int i = 0; i < 100; ++i) {
+    for (int i = 0; i < 25; ++i) {
         bool OnRoad = false;
         bool running = true;
 		float randomFloatX, randomFloatZ;
