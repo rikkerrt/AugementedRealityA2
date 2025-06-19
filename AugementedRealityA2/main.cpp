@@ -5,7 +5,7 @@
 #include "ObjModel.h"
 #include "TextBox.h"
 #include "io_manager.h"
-
+#include "CheckPointManager.h"
 #include "GameObject.h"
 #include "CubeComponent.h"
 #include "ModelComponent.h"
@@ -19,18 +19,6 @@
 #include <chrono>
 #include <iomanip>
 
-enum class ZoneType {
-    Start,
-    Checkpoint
-};
-
-struct Zone {
-    glm::vec3 min;
-    glm::vec3 max;
-    ZoneType type;
-    int index = -1;
-};
-
 using tigl::Vertex;
 
 #pragma comment(lib, "glfw3.lib")
@@ -40,9 +28,7 @@ using tigl::Vertex;
 GLFWwindow* window;
 FpsCam* camera;
 ObjModel* circuit;
-std::vector<Zone> zones;
-std::vector<bool> checkpointsCrossed;
-double fastestLapTime = 0.0;
+CheckPointManager checkPointManager;
 
 std::list<std::shared_ptr<TextBox>> textBoxes;
 std::shared_ptr<TextBox> timeTextBox;
@@ -50,23 +36,11 @@ std::shared_ptr<TextBox> textBox2;
 std::shared_ptr<TextBox> textBox3;
 std::shared_ptr<TextBox> endGameTextBox;
 
-int windowHeight;
-int windowWidth;
-
-int completedLapsCount = 0;
-int maxLaps = 3;
-
 std::list<std::shared_ptr<GameObject>> objects;
 std::shared_ptr<GameObject> player;
 
-string fileName = "TimeFile.txt";
-
-std::chrono::steady_clock::time_point startTime;
-std::chrono::duration<double> elapsedTime;
-std::vector<std::chrono::duration<double>> lapTimes;
-
-bool timing = false;
-bool endGame = false;
+int windowHeight;
+int windowWidth;
 
 void init();
 void update();
@@ -112,23 +86,12 @@ void init()
                 glfwSetWindowShouldClose(window, true);
         });
 
-    zones = {
+    std::vector<Zone> zones = {
     {{-6, 0, -1}, {6, 0, 1}, ZoneType::Start},
     {{59, 0, 84}, {72, 0, 86}, ZoneType::Checkpoint},
     {{95, 0, 0}, {107, 0, 2}, ZoneType::Checkpoint}
     };
-
-    int checkpointCount = 0;
-    for (auto& zone : zones)
-    {
-        if (zone.type == ZoneType::Checkpoint)
-        {
-            zone.index = checkpointCount;
-            checkpointCount++;
-        }
-    }
-    checkpointsCrossed = std::vector<bool>(checkpointCount, false);
-
+    checkPointManager.init(zones, "TimeFile.txt", 3);
 
     camera = new FpsCam(window, glm::vec3(0, -1, -10));
 
@@ -188,89 +151,26 @@ void init()
 
 void update()
 {
-    if (endGame)
+    bool gameContinues = checkPointManager.update(player->position, textBox2, timeTextBox, endGameTextBox, window);
+    if (!gameContinues)
     {
-        endGameTextBox->setText("Game Over! Press Z to start again.\nYour fastest lap was: " + std::to_string(fastestLapTime));
-		if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
-		{
-			endGame = false;
-            endGameTextBox->setText("");
-		}
         return;
     }
 
-    if (timing)
-    {
-        elapsedTime = std::chrono::steady_clock::now() - startTime;
-        std::ostringstream stream;
-        stream << std::fixed << std::setprecision(3) << elapsedTime.count();
-        timeTextBox->setText("Time elapsed: " + stream.str() + " seconds");
-    }
-
-
     static double lastTime = glfwGetTime();
     double currentTime = glfwGetTime();
-    camera->update(window, player->position, player->rotation);
-    textBox3->setText(std::to_string(camera->position.x) + ", " + std::to_string(camera->position.z));
-
-   for (const auto& zone : zones)
-    {
-        if (camera->position.x >= zone.min.x && camera->position.x <= zone.max.x &&
-            camera->position.z >= zone.min.z && camera->position.z <= zone.max.z)
-        {
-            if (zone.type == ZoneType::Start)
-            {
-                if (std::chrono::duration_cast<std::chrono::seconds>(
-                    std::chrono::steady_clock::now() - startTime).count() >= 1)
-                {
-                    textBox2->setText("You are at the start line!");
-                    startTime = std::chrono::steady_clock::now();
-                    timing = true;
-
-                    bool allPassed = std::all_of(
-                        checkpointsCrossed.begin(), checkpointsCrossed.end(),
-                        [](bool b) { return b; });
-
-                    if (allPassed)
-                    {
-						std::cout << "All checkpoints crossed, resetting lap count." << std::endl;
-                        completedLapsCount++;
-                        textBox2->setText("You have completed " + std::to_string(completedLapsCount) + " laps!");
-                        lapTimes.push_back(elapsedTime);
-                    }
-
-                    if (completedLapsCount == maxLaps)
-                    {
-                        timing = false;
-                        endGame = true;
-                        completedLapsCount = 0;
-                        fastestLapTime = (*std::min_element(lapTimes.begin(), lapTimes.end())).count();
-                        writeFile(fileName, fastestLapTime);
-						lapTimes.clear();
-                    }
-
-                    std::fill(checkpointsCrossed.begin(), checkpointsCrossed.end(), false);
-                }
-            }
-            else if (zone.type == ZoneType::Checkpoint && zone.index >= 0 &&
-                zone.index < checkpointsCrossed.size() && !checkpointsCrossed[zone.index])
-            {
-                checkpointsCrossed[zone.index] = true;
-                textBox2->setText("Checkpoint " + std::to_string(zone.index + 1) + " reached!");
-            }
-        }
-    }
-
     float elapsedTime = static_cast<float>(currentTime - lastTime);
     lastTime = currentTime;
 
-    camera->update(window, player->position, player->rotation);
     for (auto& o : objects)
     {
         o->update(elapsedTime);
     }
-}
 
+    camera->update(window, player->position, player->rotation);
+
+    textBox3->setText(std::to_string(player->position.x) + ", " + std::to_string(player->position.z));
+}
 
 void draw()
 {
