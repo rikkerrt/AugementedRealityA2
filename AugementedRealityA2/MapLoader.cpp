@@ -35,7 +35,7 @@ void loadMap(SceneObject* scene)
             randomFloatZ = dist(gen);
             std::cout << randomFloatX << randomFloatZ << std::endl;
 
-            std::list<BoundingBox*> roadBoxes = scene->getRoadBoxes();
+            std::list<RoadComponent::BoundingBox*> roadBoxes = scene->getRoadBoxes();
             for (auto& boundingBox : roadBoxes) {
                 if (-randomFloatX < boundingBox->tl.x && -randomFloatX > boundingBox->br.x &&
                     -randomFloatZ < boundingBox->tl.y && -randomFloatZ > boundingBox->br.y) {

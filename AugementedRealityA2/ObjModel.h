@@ -1,88 +1,71 @@
-#pragma once
+#pragma once  
 
-#include <GL/glew.h>
-#include <glm/glm.hpp>
-#include "tigl.h"
-#include <string>
-#include <vector>
-#include <list>
-#include "tigl.h"
+#include <GL/glew.h>  
+#include <glm/glm.hpp>  
+#include "tigl.h"  
+#include <string>  
+#include <vector>  
+#include <list>  
 
 #include "RoadComponent.h"
+class Texture;  
 
-class Texture;
+class ObjModel  
+{  
+private:  
+   class Vertex  
+   {  
+   public:  
+       int position;  
+       int normal;  
+       int texcoord;   
+   };  
 
+   class Face  
+   {  
+   public:  
+       std::list<Vertex> vertices;  
+   };  
+   class MaterialInfo  
+   {  
+   public:  
+       MaterialInfo();  
+       std::string name;  
+       Texture* texture;  
+       float transparency;  
+   };  
 
+   class ObjGroup  
+   {  
+   public:  
+       std::string name;  
+       int materialIndex;  
+       std::list<Face> faces;  
+       //cache  
+   };  
 
-class ObjModel
-{
-private:
-	class Vertex
-	{
-	public:
-		int position;
-		int normal;
-		int texcoord; 
-	};
+   std::vector<tigl::Vertex> vboVertices;  
+   tigl::VBO* vbo = nullptr;  
 
-	class Face
-	{
-	public:
-		std::list<Vertex> vertices;
-	};
-	class MaterialInfo
-	{
-	public:
-		MaterialInfo();
-		std::string name;
-		Texture* texture;
-		float transparency;
-	};
+   std::vector<glm::vec3> vertices;  
+   std::vector<glm::vec3> normals;  
+   std::vector<glm::vec2> texcoords;  
+   std::vector<ObjGroup*> groups;  
+   std::vector<MaterialInfo*> materials;  
+   RoadComponent::Rect* rect; // Use fully qualified name  
 
-	class ObjGroup
-	{
-	public:
-		std::string name;
-		int materialIndex;
-		std::list<Face> faces;
-		//cache
-	};
+   void buildBoundingBox();  
+   void loadMaterialFile(const std::string &fileName, const std::string &dirName);  
 
-	std::vector<tigl::Vertex> vboVertices;
-	tigl::VBO* vbo = nullptr;
+   /// <summary>  
+   /// Build a vertex buffer object from the model  
+   /// </summary>  
+   void buildVertexBuffer();  
 
-	glm::vec3 minimalBounds;
-	glm::vec3 maximumBounds;
+public:  
+   ObjModel(const std::string &filename);  
+   ~ObjModel(void);  
 
-	std::vector<glm::vec3>	vertices;
-	std::vector<glm::vec3>	normals;
-	std::vector<glm::vec2>	texcoords;
-	std::vector<ObjGroup*> groups;
-	std::vector<MaterialInfo*> materials;
-	Rect* rect;
-
-	void buildBoundingBox();
-	void loadMaterialFile(const std::string &fileName, const std::string &dirName);
-
-	/// <summary>
-	/// Build a vertex buffer object from the moadel
-	/// </summary>
-	void buildVertexBuffer();
-
-	/// <summary>
-	/// Construct the minimal bounds vertex
-	/// </summary>
-	void buildMinimalBounds();
-
-	/// <summary>
-	/// Construct the maximum bound vertex
-	/// </summary>
-	void buildMaximumBound();
-public:
-	ObjModel(const std::string &filename);
-	~ObjModel(void);
-
-	void draw();
-	Rect* getRect();
+   void draw();  
+   RoadComponent::Rect* getRect(); // Use fully qualified name  
 };
-

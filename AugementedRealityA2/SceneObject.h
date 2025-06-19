@@ -23,7 +23,7 @@ public:
 	void addRoadObject(std::shared_ptr<GameObject> gameObject, int type);
 	std::list<std::shared_ptr<GameObject>> getGameObjects();
 	std::list<std::shared_ptr<GameObject>> getPhysicsObjects();
-	std::list<BoundingBox*> getRoadBoxes();
+	std::list<RoadComponent::BoundingBox*> getRoadBoxes();
 	void update(float elapsedTime);
 	void draw(const glm::mat4& parentMatrix = glm::mat4(1.0f));
 

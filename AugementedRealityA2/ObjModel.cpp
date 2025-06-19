@@ -177,7 +177,7 @@ ObjModel::ObjModel(const std::string &fileName)
 	}
 	groups.push_back(currentGroup);
 	buildVertexBuffer();
-	rect = new Rect();
+	rect = new RoadComponent::Rect();
 	buildBoundingBox();
 }
 
@@ -314,7 +314,7 @@ void ObjModel::buildBoundingBox() {
 	}
 }
 
-Rect* ObjModel::getRect()
+RoadComponent::Rect* ObjModel::getRect()
 {
 	return rect;
 }
@@ -352,35 +352,5 @@ void ObjModel::buildVertexBuffer()
 	if (vbo)
 		delete vbo;
 	vbo = tigl::createVbo(vboVertices);
-}
-
-void ObjModel::buildMinimalBounds() {
-	minimalBounds = vertices[0];
-	for (const auto& v : vertices)
-	{
-		minimalBounds.x = std::min(minimalBounds.x, v.x);
-		minimalBounds.y = std::min(minimalBounds.y, v.y);
-		minimalBounds.z = std::min(minimalBounds.z, v.z);
-	}
-}
-
-void ObjModel::buildMaximumBound() {
-	maximumBounds = vertices[0];
-	for (const auto& v : vertices)
-	{
-		maximumBounds.x = std::max(maximumBounds.x, v.x);
-		maximumBounds.y = std::max(maximumBounds.y, v.y);
-		maximumBounds.z = std::max(maximumBounds.z, v.z);
-	}
-}
-
-glm::vec3 ObjModel::getMinimumBounds()
-{
-	return minimalBounds;
-}
-
-glm::vec3 ObjModel::getMaximumBounds()
-{
-	return maximumBounds;
 }
 

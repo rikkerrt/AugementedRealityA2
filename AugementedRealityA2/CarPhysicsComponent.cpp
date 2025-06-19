@@ -6,11 +6,10 @@
 #include "PhysicsComponent.h"
 #include "tigl.h"
 #include <iostream>
-
-CarPhysicsComponent::CarPhysicsComponent(float speed)
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
+CarPhysicsComponent::CarPhysicsComponent(float speed)
 {
     this->speed = speed;
 }
@@ -46,7 +45,7 @@ void CarPhysicsComponent::update(float elapsedTime)
 	}
 
 	// looks for road
-	std::list<BoundingBox*> roadBoxes = gameObject->sceneObject->getRoadBoxes();
+	std::list<RoadComponent::BoundingBox*> roadBoxes = gameObject->sceneObject->getRoadBoxes();
 	bool onGrass = false;
 	for (auto& boundingBox : roadBoxes) {
 		if (-gameObject->position.x < boundingBox->tl.x && -gameObject->position.x > boundingBox->br.x &&

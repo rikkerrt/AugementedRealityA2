@@ -36,9 +36,9 @@ void SceneObject::addRoadObject(std::shared_ptr<GameObject> gameObject, int type
 
 
 	//gets object model component
-	BoundingBox* boundingBox = new BoundingBox();
-	Rect* modelBox = gameObject->getComponent<ModelComponent>()->getModel()->getRect();
-	Rect* translatedBox = new Rect();
+	RoadComponent::BoundingBox* boundingBox = new RoadComponent::BoundingBox();
+	RoadComponent::Rect* modelBox = gameObject->getComponent<ModelComponent>()->getModel()->getRect();
+	RoadComponent::Rect* translatedBox = new RoadComponent::Rect();
 
 	translatedBox->tl = glm::vec2(
 		-(modelBox->tl.x * cos(rotationY) - modelBox->tl.y * sin(rotationY)) - x,
@@ -114,9 +114,9 @@ std::list<std::shared_ptr<GameObject>> SceneObject::getPhysicsObjects()
 	return physicsObjects;
 }
 
-std::list<BoundingBox*> SceneObject::getRoadBoxes()
+std::list<RoadComponent::BoundingBox*> SceneObject::getRoadBoxes()
 {
-	std::list<BoundingBox*> roadBoxes;
+	std::list<RoadComponent::BoundingBox*> roadBoxes;
 	for (auto& gameObject : gameObjects) {
 		if (gameObject->getComponent<RoadComponent>()) {
 			roadBoxes.push_back(gameObject->getComponent<RoadComponent>()->roadBox);
@@ -139,7 +139,7 @@ void SceneObject::draw(const glm::mat4& parentMatrix)
 	}
 
 	std::vector<tigl::Vertex> verts;
-	std::list<BoundingBox*> roadBoxes = getRoadBoxes();
+	std::list<RoadComponent::BoundingBox*> roadBoxes = getRoadBoxes();
 
 	tigl::shader->setModelMatrix(glm::mat4(1.0f));
 	/*for (auto& roadBox : roadBoxes) {

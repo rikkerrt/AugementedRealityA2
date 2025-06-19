@@ -44,7 +44,6 @@ std::shared_ptr<TextBox> messageTextBox;
 std::shared_ptr<TextBox> textBox3;
 std::shared_ptr<TextBox> endGameTextBox;
 
-std::list<std::shared_ptr<GameObject>> objects;
 std::shared_ptr<GameObject> car;
 
 
@@ -115,20 +114,22 @@ void init()
     car->position = glm::vec3(0, 0, 5);
     car->addComponent(std::make_shared<ModelComponent>("models/car/carNoSteeringWheel.obj"));
     car->addComponent(std::make_shared<CarPhysicsComponent>(15));
-    objects.push_back(car);
+    scene.addGameObject(car);
 
     // Add Steering wheel
     auto steeringWheel = std::make_shared<GameObject>();
     steeringWheel->addComponent(std::make_shared<ModelComponent>("models/car/steeringWheel.obj"));
     steeringWheel->addComponent(std::make_shared<ChildComponent>(car));
-    objects.push_back(steeringWheel);
-    loadMap(&scene);
+    scene.addGameObject(steeringWheel);
 
     // Add Camera
-    camera->addComponent(std::make_shared<ChildComponent>(car, glm::vec3{0.3, 1.25, 0}));
     auto camera = std::make_shared<GameObject>();
+    camera->addComponent(std::make_shared<ChildComponent>(car, glm::vec3{0.3, 1.25, 0}));
     camera->addComponent(std::make_shared<PerspectiveCameraComponent>());
-    objects.push_back(camera);
+    scene.addGameObject(camera);
+
+    loadMap(&scene);
+
     cameraManager = new CameraManager(camera);
 
     // Pick between vision and keyboard steering
@@ -140,8 +141,7 @@ void init()
         VideoCapture webCam(0);
         VisionCalibration cal;
 
-        {
-        if (calibrateVision)
+        if (calibrateVision) {
             cal.addColor("Yellow");
             cal.addColor("Blue");
 
@@ -153,6 +153,7 @@ void init()
         {
             cal.load("calibration_settings.json");
         }
+
         car->addComponent(std::make_shared<VisionSteeringComponent>(webCam, cal.getColors()));
 
         auto baseComponent = car->getComponent<Component>();
@@ -161,28 +162,30 @@ void init()
         if (visionComponent) {
             visionComponent->setDebugMode(true);
             visionComponent->setMinimalMarkerSize(50);
-    } 
         }
-    else
-        car->addComponent(std::make_shared<KeyboardSteeringComponent>());
-    {
-    }
+        else
+        {
+            car->addComponent(std::make_shared<KeyboardSteeringComponent>());
+        }
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    tigl::shader->enableColor(true);
-    tigl::shader->enableTexture(true);
-	textBoxes.push_back(timeTextBox);
-    textBoxes.push_back(messageTextBox);
-	textBoxes.push_back(textBox3);
-	endGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth - 1000,300), glm::vec2(300, 80), "fonts/Opensans.ttf");
-	textBoxes.push_back(endGameTextBox);
-    textBox3 = std::make_shared<TextBox>("---", glm::vec2(windowWidth -1000, 30), glm::vec2(300, 80), "fonts/Opensans.ttf");
-    messageTextBox = std::make_shared<TextBox>("---", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80), "fonts/Opensans.ttf");
-    timeTextBox = std::make_shared<TextBox>("---", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80), "fonts/Opensans.ttf");
-    glPointSize(10.0f);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_TEXTURE);
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        tigl::shader->enableColor(true);
+        tigl::shader->enableTexture(true);
+        textBoxes.push_back(timeTextBox);
+        textBoxes.push_back(messageTextBox);
+        textBoxes.push_back(textBox3);
+        endGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth - 1000, 300), glm::vec2(300, 80), "fonts/Opensans.ttf");
+        textBoxes.push_back(endGameTextBox);
+        textBox3 = std::make_shared<TextBox>("---", glm::vec2(windowWidth - 1000, 30), glm::vec2(300, 80), "fonts/Opensans.ttf");
+        messageTextBox = std::make_shared<TextBox>("---", glm::vec2(windowHeight - 300, 40), glm::vec2(300, 80), "fonts/Opensans.ttf");
+        timeTextBox = std::make_shared<TextBox>("---", glm::vec2(windowWidth - 300, 10), glm::vec2(300, 80), "fonts/Opensans.ttf");
+        glPointSize(10.0f);
+    }
+}
+
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -204,8 +207,7 @@ void update()
     lastTime = currentTime;
 
     textBox3->setText(std::to_string(car->position.x) + ", " + std::to_string(car->position.z));
-    camera->update(window);
-	scene.update(0.01f);
+	scene.update( elapsedTime);
 }
 
 void draw()
@@ -221,8 +223,7 @@ void draw()
     tigl::shader->setViewMatrix(cameraManager->getViewMatrix());
     tigl::shader->setModelMatrix(glm::mat4(1.0f));
     
-    for (auto& o : objects)
-        o->draw();
+	scene.draw();
 
     // Dit zou ook nog wel ergens anders kunnen
     // Draw text/UI
@@ -230,15 +231,8 @@ void draw()
     glm::mat4 orthoProjection = glm::ortho(0.0f, (float)viewport[2], (float)viewport[3], 0.0f);
     tigl::shader->setProjectionMatrix(orthoProjection);
 
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_TEXTURE);
-
-    glPointSize(10.0f);
-
-	scene.draw();
-}
-	for (auto& textBox : textBoxes)
-	{
-		textBox->draw();
-	}
+    for (auto& textBox : textBoxes)
+    {
+        textBox->draw();
+    }
 }
