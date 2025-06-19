@@ -110,12 +110,13 @@ void initWorld() {
         std::random_device rd;
         std::mt19937 gen(rd());
         std::uniform_real_distribution<float> dist(-200.0f, 200.0f);
+        std::uniform_int_distribution<int> distInt(1, 3);
 
 		while (running) {
             randomFloatX = dist(gen);
             randomFloatZ = dist(gen);
             std::cout << randomFloatX << randomFloatZ << std::endl;
-            
+
 			std::list<BoundingBox*> roadBoxes = scene.getRoadBoxes();
 			for (auto& boundingBox : roadBoxes) {
 				if (-randomFloatX < boundingBox->tl.x && -randomFloatX > boundingBox->br.x &&
@@ -134,7 +135,7 @@ void initWorld() {
 		}
         auto prop = std::make_shared<GameObject>();
         prop->position = glm::vec3(randomFloatX, 0, randomFloatZ);
-        prop->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree1.obj"));
+        prop->addComponent(std::make_shared<ModelComponent>("models/test/props/Tree" + std::to_string(distInt(gen)) + ".obj"));
         scene.addGameObject(prop);
     }
 }
