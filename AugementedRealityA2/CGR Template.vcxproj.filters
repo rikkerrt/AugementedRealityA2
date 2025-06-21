@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="CarPhysicsComponent.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="CubeComponent.cpp" />
+    <ClCompile Include="DrawComponent.cpp" />
+    <ClCompile Include="FpsCam.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="KeyboardSteeringComponent.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ModelComponent.cpp" />
+    <ClCompile Include="ObjModel.cpp" />
+    <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="SteeringComponent.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="tigl.cpp" />
+    <ClCompile Include="VisionCalibration.cpp" />
+    <ClCompile Include="VisionSteeringComponent.cpp" />
+    <ClCompile Include="io_manager.cpp" />
+  </ItemGroup>
+ </Project>

@@ -9,7 +9,6 @@
 *.slo
 *.lo
 *.o
-*.obj
 
 # Precompiled Headers
 *.gch
@@ -24,11 +23,13 @@
 *.mod
 *.smod
 
+# txt files
+*.txt
+
 # Compiled Static libraries
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
@@ -68,7 +69,7 @@ mono_crash.*
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
-x64/
+# x64/
 x86/
 [Ww][Ii][Nn]32/
 [Aa][Rr][Mm]/
