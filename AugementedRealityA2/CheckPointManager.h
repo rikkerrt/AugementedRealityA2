@@ -27,9 +27,10 @@ public:
         GLFWwindow* window);
     void reset();
     void handleEndGameInput(GLFWwindow* window, std::shared_ptr<TextBox> endBox);
+    glm::vec3 getLastCheckpointPosition();
 
 private:
-    std::vector<CheckPoint> zones;
+    std::vector<CheckPoint> checkPoints;
     std::vector<bool> checkpointsCrossed;
     int completedLaps = 0;
     int maxLaps = 3;
@@ -37,6 +38,7 @@ private:
     bool timing = false;
     bool endGame = false;
 	std::string fileName;
+    glm::vec3 lastCheckpointPosition = glm::vec3(0, 0, 0);
 
     std::chrono::steady_clock::time_point startTime;
     std::chrono::duration<double> elapsedTime;

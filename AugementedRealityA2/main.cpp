@@ -45,6 +45,8 @@ std::shared_ptr<TextBox> endGameTextBox;
 
 std::shared_ptr<GameObject> car;
 
+int amountOfLaps = 3;
+
 
 int windowHeight;
 int windowWidth;
@@ -170,7 +172,7 @@ void initGame()
 
     std::vector<CheckPoint> checkPoints;
 	checkPoints = scene.getCheckPoints();
-    checkPointManager.init(checkPoints, "TimeFile.txt", 3);
+    checkPointManager.init(checkPoints, "TimeFile.txt", amountOfLaps);
 	for (auto& checkPoint : checkPoints)
 	{
 		std::cout << "CheckPoint: type " << (checkPoint.type == ZoneType::Start ? "Start" : "Checkpoint")
@@ -185,6 +187,11 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 {
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+	if (key == GLFW_KEY_R && action == GLFW_PRESS)
+	{
+		car->position = checkPointManager.getLastCheckpointPosition();
+		car->rotation = glm::vec3(0, 0, 0);
+	}
 }
 
 void update()

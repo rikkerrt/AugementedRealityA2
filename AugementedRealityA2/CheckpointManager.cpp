@@ -7,16 +7,16 @@
 
 void CheckPointManager::init(std::vector<CheckPoint>& checkPointZones, std::string fileName, int maxLaps)
 {
-    zones = checkPointZones;
+    checkPoints = checkPointZones;
 	this->fileName = fileName;
 	this->maxLaps = maxLaps;
 
     int index = 0;
-    for (auto& zone : zones)
+    for (auto& checkPoint : checkPoints)
     {
-        if (zone.type == ZoneType::Checkpoint) 
+        if (checkPoint.type == ZoneType::Checkpoint) 
         {
-            zone.index = index++;
+            checkPoint.index = index++;
             std::cout << "Zone " << std::endl;
         }
     }
@@ -53,15 +53,16 @@ bool CheckPointManager::update(const glm::vec3& position, std::shared_ptr<TextBo
     }
 
 
-    for (const auto& zone : zones) {
-        if (position.x >= zone.min.x && position.x <= zone.max.x &&
-            position.z >= zone.min.z && position.z <= zone.max.z) {
-            if (zone.type == ZoneType::Start) {
+    for (const auto& checkPoint : checkPoints) {
+        if (position.x >= checkPoint.min.x && position.x <= checkPoint.max.x &&
+            position.z >= checkPoint.min.z && position.z <= checkPoint.max.z) {
+            lastCheckpointPosition = (checkPoints[checkPoint.index].min + checkPoints[checkPoint.index].max) * 0.5f;
+            if (checkPoint.type == ZoneType::Start) {
                 handleStartZone(messageBox, endBox);
             }
-            else if (zone.type == ZoneType::Checkpoint && zone.index >= 0 &&
-                zone.index < checkpointsCrossed.size() && !checkpointsCrossed[zone.index]) {
-                handleCheckpointZone(zone.index, messageBox);
+            else if (checkPoint.type == ZoneType::Checkpoint && checkPoint.index >= 0 &&
+                checkPoint.index < checkpointsCrossed.size() && !checkpointsCrossed[checkPoint.index]) {
+                handleCheckpointZone(checkPoint.index, messageBox);
             }
         }
     }
@@ -120,5 +121,10 @@ void CheckPointManager::handleEndGameInput(GLFWwindow* window, std::shared_ptr<T
         reset();
         endBox->setText("");
     }
+}
+
+glm::vec3 CheckPointManager::getLastCheckpointPosition()
+{
+	return lastCheckpointPosition;
 }
 
