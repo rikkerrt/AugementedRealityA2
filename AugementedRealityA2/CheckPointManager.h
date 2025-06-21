@@ -17,6 +17,7 @@ struct CheckPoint {
     glm::vec3 max;
     ZoneType type;
     int index = -1;
+	glm::vec3 rotation = glm::vec3(0, 0, 0);
 };
 
 class CheckPointManager {
@@ -27,7 +28,7 @@ public:
         GLFWwindow* window);
     void reset();
     void handleEndGameInput(GLFWwindow* window, std::shared_ptr<TextBox> endBox);
-    glm::vec3 getLastCheckpointPosition();
+    CheckPoint getLastCheckpoint();
 
 private:
     std::vector<CheckPoint> checkPoints;
@@ -38,7 +39,7 @@ private:
     bool timing = false;
     bool endGame = false;
 	std::string fileName;
-    glm::vec3 lastCheckpointPosition = glm::vec3(0, 0, 0);
+    CheckPoint lastCheckpoint = { glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), ZoneType::Start };
 
     std::chrono::steady_clock::time_point startTime;
     std::chrono::duration<double> elapsedTime;

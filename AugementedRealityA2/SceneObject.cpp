@@ -164,6 +164,7 @@ void SceneObject::createCheckPointFromBoundingBox(RoadComponent::BoundingBox* bo
 	cp.min = glm::vec3(std::min(x1, x2), 0.0f, std::min(z1, z2));
 	cp.max = glm::vec3(std::max(x1, x2), 0.0f, std::max(z1, z2));
 	cp.type = type;
+	cp.rotation = glm::vec3(0.0f, rotationY, 0.0f);
 
 	checkPoints.push_back(cp);
 }

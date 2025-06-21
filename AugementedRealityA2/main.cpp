@@ -189,8 +189,14 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 		glfwSetWindowShouldClose(window, true);
 	if (key == GLFW_KEY_R && action == GLFW_PRESS)
 	{
-		car->position = checkPointManager.getLastCheckpointPosition();
-		car->rotation = glm::vec3(0, 0, 0);
+        CheckPoint cp = checkPointManager.getLastCheckpoint();
+
+        car->position = glm::vec3(
+            (cp.min.x + cp.max.x) * 0.5f,
+            0.0f,
+            (cp.min.z + cp.max.z) * 0.5f
+        );
+		car->rotation = cp.rotation;
 	}
 }
 

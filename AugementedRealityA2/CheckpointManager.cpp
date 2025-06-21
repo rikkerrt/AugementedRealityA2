@@ -56,7 +56,16 @@ bool CheckPointManager::update(const glm::vec3& position, std::shared_ptr<TextBo
     for (const auto& checkPoint : checkPoints) {
         if (position.x >= checkPoint.min.x && position.x <= checkPoint.max.x &&
             position.z >= checkPoint.min.z && position.z <= checkPoint.max.z) {
-            lastCheckpointPosition = (checkPoints[checkPoint.index].min + checkPoints[checkPoint.index].max) * 0.5f;
+
+            lastCheckpoint = checkPoint;
+
+    /*        const auto& cp = checkPoints[checkPoint.index + 1];
+            lastCheckpointPosition = glm::vec3(
+                (cp.min.x + cp.max.x) * 0.5f,
+                0.0f,
+                (cp.min.z + cp.max.z) * 0.5f
+            );*/
+
             if (checkPoint.type == ZoneType::Start) {
                 handleStartZone(messageBox, endBox);
             }
@@ -66,6 +75,7 @@ bool CheckPointManager::update(const glm::vec3& position, std::shared_ptr<TextBo
             }
         }
     }
+
     return true;
 }
 
@@ -123,8 +133,8 @@ void CheckPointManager::handleEndGameInput(GLFWwindow* window, std::shared_ptr<T
     }
 }
 
-glm::vec3 CheckPointManager::getLastCheckpointPosition()
+CheckPoint CheckPointManager::getLastCheckpoint()
 {
-	return lastCheckpointPosition;
+	return lastCheckpoint;
 }
 
