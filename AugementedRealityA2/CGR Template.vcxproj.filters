@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="CarPhysicsComponent.cpp" />
+    <ClCompile Include="Component.cpp" />
+    <ClCompile Include="CubeComponent.cpp" />
+    <ClCompile Include="DrawComponent.cpp" />
+    <ClCompile Include="FpsCam.cpp" />
+    <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="KeyboardSteeringComponent.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="ModelComponent.cpp" />
+    <ClCompile Include="ObjModel.cpp" />
+    <ClCompile Include="TextBox.cpp" />
+    <ClCompile Include="SteeringComponent.cpp" />
+    <ClCompile Include="Texture.cpp" />
+    <ClCompile Include="tigl.cpp" />
+    <ClCompile Include="VisionCalibration.cpp" />
+    <ClCompile Include="VisionSteeringComponent.cpp" />
+    <ClCompile Include="IOManager.cpp" />
+    <ClCompile Include="CameraComponent.cpp" />
+    <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="PerspectiveCameraComponent.cpp" />
+    <ClCompile Include="ChildComponent.cpp" />
+    <ClCompile Include="CheckpointManager.cpp" />
+    <ClCompile Include="MapLoader.cpp" />
+    <ClCompile Include="stb_truetype_impl.cpp" />
+    <ClCompile Include="PhysicsComponent.cpp" />
+    <ClCompile Include="RoadComponent.cpp" />
+    <ClCompile Include="SceneObject.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CameraComponent.h" />
+    <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="PerspectiveCameraComponent.h" />
+    <ClInclude Include="CarPhysicsComponent.h" />
+    <ClInclude Include="CheckPointManager.h" />
+    <ClInclude Include="ChildComponent.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="CubeComponent.h" />
+    <ClInclude Include="DrawComponent.h" />
+    <ClInclude Include="FpsCam.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="IOManager.h" />
+    <ClInclude Include="KeyboardSteeringComponent.h" />
+    <ClInclude Include="MapLoader.h" />
+    <ClInclude Include="ModelComponent.h" />
+    <ClInclude Include="ObjModel.h" />
+    <ClInclude Include="PhysicsComponent.h" />
+    <ClInclude Include="RoadComponent.h" />
+    <ClInclude Include="SceneObject.h" />
+    <ClInclude Include="RaceData.h" />
+    <ClInclude Include="TextBox.h" />
+    <ClInclude Include="SteeringComponent.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="tigl.h" />
+    <ClInclude Include="VisionCalibration.h" />
+    <ClInclude Include="VisionSteeringComponent.h" />
+  </ItemGroup>
+</Project>

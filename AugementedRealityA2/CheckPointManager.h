@@ -1,0 +1,53 @@
+#pragma once
+#include <GL/glew.h>
+#include <vector>
+#include <glm/glm.hpp>
+#include <chrono>
+#include <GLFW/glfw3.h>
+
+#include "TextBox.h"
+
+enum class ZoneType 
+{
+    Start,
+    Checkpoint
+};
+
+struct CheckPoint 
+{
+    glm::vec3 min;
+    glm::vec3 max;
+    ZoneType type;
+    int index = -1;
+	glm::vec3 rotation = glm::vec3(0, 0, 0);
+};
+
+class CheckPointManager 
+{
+public:
+    void init(std::vector<CheckPoint>& zones, std::string filename, int maxLaps);
+    bool update(const glm::vec3& position, std::shared_ptr<TextBox> messageBox,
+        std::shared_ptr<TextBox> timeBox, GLFWwindow* window);
+    void reset();
+    CheckPoint getLastCheckpoint();
+    double getFastestLap();
+
+private:
+    std::vector<CheckPoint> checkPoints;
+    std::vector<bool> checkpointsCrossed;
+    int completedLaps = 0;
+    int maxLaps = 3;
+    int updateCoolDown = 1;
+    bool timing = false;
+    bool endGame = false;
+	std::string fileName;
+    CheckPoint lastCheckpoint = { glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), ZoneType::Start };
+
+    std::chrono::steady_clock::time_point startTime;
+    std::chrono::duration<double> elapsedTime;
+    std::vector<std::chrono::duration<double>> lapTimes;
+    double fastestLap = 0.0;
+
+    void handleStartZone(std::shared_ptr<TextBox> messageBox);
+    void handleCheckpointZone(int index, std::shared_ptr<TextBox> messageBox);
+};
