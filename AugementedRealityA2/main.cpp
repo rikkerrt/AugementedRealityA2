@@ -40,7 +40,6 @@ CheckPointManager checkPointManager;
 std::list<std::shared_ptr<TextBox>> textBoxes;
 std::shared_ptr<TextBox> timeTextBox;
 std::shared_ptr<TextBox> messageTextBox;
-std::shared_ptr<TextBox> textBox3;
 std::shared_ptr<TextBox> endGameTextBox;
 
 std::shared_ptr<GameObject> car;
@@ -166,9 +165,8 @@ void initGame()
 	textBoxes.push_back(timeTextBox);
     messageTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.15f, windowHeight * 0.88f - 20), "fonts/Opensans.ttf");
     textBoxes.push_back(messageTextBox);
-    textBox3 = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.05f, windowHeight * 0.1f), "fonts/Opensans.ttf");
-	textBoxes.push_back(textBox3);
     endGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.5f - 100, windowHeight * 0.5f), "fonts/Opensans.ttf");
+	textBoxes.push_back(endGameTextBox);
 
     std::vector<CheckPoint> checkPoints;
 	checkPoints = scene.getCheckPoints();
@@ -197,24 +195,39 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
             (cp.min.z + cp.max.z) * 0.5f
         );
 		car->rotation = cp.rotation;
+        car->getComponent<CarPhysicsComponent>()->resetSteering();
+        car->getComponent<SteeringComponent>()->angle = 0;
 	}
 }
 
 void update()
 {
-    bool gameContinues = checkPointManager.update(car->position, messageTextBox, timeTextBox, endGameTextBox, window);
+    bool gameContinues = checkPointManager.update(car->position, messageTextBox, timeTextBox, window);
+    static double lastTime = glfwGetTime();
+
     if (!gameContinues)
     {
+        endGameTextBox->setText("Game Over! Press Z to start again.\nFastest lap: " + std::to_string(checkPointManager.getFastestLap()));
+        if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
+            checkPointManager.reset();
+            endGameTextBox->setText("");
+
+			car->position = glm::vec3(0, 0, 10);
+			car->rotation = glm::vec3(0, 0, 0);
+            car->getComponent<CarPhysicsComponent>()->resetSteering();
+            car->getComponent<SteeringComponent>()->angle = 0;
+
+            lastTime = glfwGetTime();
+        }
+
         return;
     }
 
     // Deze logica niet!
-    static double lastTime = glfwGetTime();
     double currentTime = glfwGetTime();
     float elapsedTime = static_cast<float>(currentTime - lastTime);
     lastTime = currentTime;
 
-    textBox3->setText(std::to_string(car->position.x) + ", " + std::to_string(car->position.z));
     scene.update(elapsedTime);
 }
 

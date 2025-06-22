@@ -26,15 +26,10 @@ void CheckPointManager::init(std::vector<CheckPoint>& checkPointZones, std::stri
 }
 
 bool CheckPointManager::update(const glm::vec3& position, std::shared_ptr<TextBox> messageBox,
-    std::shared_ptr<TextBox> timeBox, std::shared_ptr<TextBox> endBox,
-    GLFWwindow* window)
+    std::shared_ptr<TextBox> timeBox, GLFWwindow* window)
 {
     if (endGame) {
-        endBox->setText("Game Over! Press Z to start again.\nFastest lap: " + std::to_string(fastestLap));
-        if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-            reset();
-            endBox->setText("");
-        }
+       
         return false;
     }
 
@@ -52,22 +47,14 @@ bool CheckPointManager::update(const glm::vec3& position, std::shared_ptr<TextBo
         timeBox->setText("Time: " + stream.str() + " sec\n" + sectorStatus);
     }
 
-
     for (const auto& checkPoint : checkPoints) {
         if (position.x >= checkPoint.min.x && position.x <= checkPoint.max.x &&
             position.z >= checkPoint.min.z && position.z <= checkPoint.max.z) {
 
             lastCheckpoint = checkPoint;
 
-    /*        const auto& cp = checkPoints[checkPoint.index + 1];
-            lastCheckpointPosition = glm::vec3(
-                (cp.min.x + cp.max.x) * 0.5f,
-                0.0f,
-                (cp.min.z + cp.max.z) * 0.5f
-            );*/
-
             if (checkPoint.type == ZoneType::Start) {
-                handleStartZone(messageBox, endBox);
+                handleStartZone(messageBox);
             }
             else if (checkPoint.type == ZoneType::Checkpoint && checkPoint.index >= 0 &&
                 checkPoint.index < checkpointsCrossed.size() && !checkpointsCrossed[checkPoint.index]) {
@@ -79,7 +66,7 @@ bool CheckPointManager::update(const glm::vec3& position, std::shared_ptr<TextBo
     return true;
 }
 
-void CheckPointManager::handleStartZone(std::shared_ptr<TextBox> messageBox, std::shared_ptr<TextBox> endBox)
+void CheckPointManager::handleStartZone(std::shared_ptr<TextBox> messageBox)
 {
     if (std::chrono::duration_cast<std::chrono::seconds>(std::chrono::steady_clock::now() - startTime).count() >= updateCoolDown) {
         messageBox->setText("You are at the start line!");
@@ -87,6 +74,7 @@ void CheckPointManager::handleStartZone(std::shared_ptr<TextBox> messageBox, std
         timing = true;
 
         bool allPassed = std::all_of(checkpointsCrossed.begin(), checkpointsCrossed.end(), [](bool b) { return b; });
+        allPassed = true;
         if (allPassed) {
             completedLaps++;
             messageBox->setText("You completed lap " + std::to_string(completedLaps));
@@ -99,7 +87,6 @@ void CheckPointManager::handleStartZone(std::shared_ptr<TextBox> messageBox, std
             completedLaps = 0;
             fastestLap = (*std::min_element(lapTimes.begin(), lapTimes.end())).count();
             writeFile(fileName, fastestLap);
-            lapTimes.clear();
         }
 
         std::fill(checkpointsCrossed.begin(), checkpointsCrossed.end(), false);
@@ -114,23 +101,11 @@ void CheckPointManager::handleCheckpointZone(int index, std::shared_ptr<TextBox>
 
 void CheckPointManager::reset()
 {
+    lapTimes.clear();
+	lastCheckpoint = { glm::vec3(0, 0, 0), glm::vec3(0, 0, 0), ZoneType::Start };
     completedLaps = 0;
     endGame = false;
     std::fill(checkpointsCrossed.begin(), checkpointsCrossed.end(), false);
-}
-
-void CheckPointManager::handleEndGameInput(GLFWwindow* window, std::shared_ptr<TextBox> endBox)
-{
-    if (!endGame)
-        return;
-
-    endBox->setText("Game Over! Press Z to start again.\nFastest lap: " + std::to_string(fastestLap));
-
-    if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
-    {
-        reset();
-        endBox->setText("");
-    }
 }
 
 CheckPoint CheckPointManager::getLastCheckpoint()
@@ -138,3 +113,7 @@ CheckPoint CheckPointManager::getLastCheckpoint()
 	return lastCheckpoint;
 }
 
+double CheckPointManager::getFastestLap()
+{
+	return fastestLap;
+}

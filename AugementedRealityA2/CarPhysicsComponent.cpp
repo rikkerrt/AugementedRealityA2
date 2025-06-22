@@ -69,3 +69,9 @@ void CarPhysicsComponent::update(float elapsedTime)
     gameObject->position.z -= cos(gameObject->rotation.y) * currentSpeed * elapsedTime;
 }
 
+void CarPhysicsComponent::resetSteering() 
+{
+	steeringAngle = 0.0f;
+}
+
+

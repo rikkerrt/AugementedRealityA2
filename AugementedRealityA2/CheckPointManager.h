@@ -24,11 +24,10 @@ class CheckPointManager {
 public:
     void init(std::vector<CheckPoint>& zones, std::string filename, int maxLaps);
     bool update(const glm::vec3& position, std::shared_ptr<TextBox> messageBox,
-        std::shared_ptr<TextBox> timeBox, std::shared_ptr<TextBox> endBox,
-        GLFWwindow* window);
+        std::shared_ptr<TextBox> timeBox, GLFWwindow* window);
     void reset();
-    void handleEndGameInput(GLFWwindow* window, std::shared_ptr<TextBox> endBox);
     CheckPoint getLastCheckpoint();
+    double getFastestLap();
 
 private:
     std::vector<CheckPoint> checkPoints;
@@ -46,6 +45,6 @@ private:
     std::vector<std::chrono::duration<double>> lapTimes;
     double fastestLap = 0.0;
 
-    void handleStartZone(std::shared_ptr<TextBox> messageBox, std::shared_ptr<TextBox> endBox);
+    void handleStartZone(std::shared_ptr<TextBox> messageBox);
     void handleCheckpointZone(int index, std::shared_ptr<TextBox> messageBox);
 };
