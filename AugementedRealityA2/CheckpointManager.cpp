@@ -74,7 +74,6 @@ void CheckPointManager::handleStartZone(std::shared_ptr<TextBox> messageBox)
         timing = true;
 
         bool allPassed = std::all_of(checkpointsCrossed.begin(), checkpointsCrossed.end(), [](bool b) { return b; });
-        allPassed = true;
         if (allPassed) {
             completedLaps++;
             messageBox->setText("You completed lap " + std::to_string(completedLaps));

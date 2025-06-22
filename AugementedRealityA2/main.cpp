@@ -40,12 +40,15 @@ CheckPointManager checkPointManager;
 std::list<std::shared_ptr<TextBox>> textBoxes;
 std::shared_ptr<TextBox> timeTextBox;
 std::shared_ptr<TextBox> messageTextBox;
-std::shared_ptr<TextBox> endGameTextBox;
+std::shared_ptr<TextBox> startAndEndGameTextBox;
 
 std::shared_ptr<GameObject> car;
 
 int amountOfLaps = 3;
-
+double countdownStartTime = -1.0;
+double lastFrameTime = 0.0;
+bool gameRunning = false;
+const int countdownSeconds = 3;
 
 int windowHeight;
 int windowWidth;
@@ -54,6 +57,8 @@ void initGame();
 void update();
 void draw();
 void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+void resetGame();
+void handleCountdown(double currentTime, double& lastFrameTime);
 
 int main(void)
 {
@@ -165,8 +170,8 @@ void initGame()
 	textBoxes.push_back(timeTextBox);
     messageTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.15f, windowHeight * 0.88f - 20), "fonts/Opensans.ttf");
     textBoxes.push_back(messageTextBox);
-    endGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.5f - 100, windowHeight * 0.5f), "fonts/Opensans.ttf");
-	textBoxes.push_back(endGameTextBox);
+    startAndEndGameTextBox = std::make_shared<TextBox>("", glm::vec2(windowWidth * 0.5f - 100, windowHeight * 0.5f), "fonts/Opensans.ttf");
+	textBoxes.push_back(startAndEndGameTextBox);
 
     std::vector<CheckPoint> checkPoints;
 	checkPoints = scene.getCheckPoints();
@@ -202,31 +207,29 @@ void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 void update()
 {
-    bool gameContinues = checkPointManager.update(car->position, messageTextBox, timeTextBox, window);
-    static double lastTime = glfwGetTime();
+    static double lastFrameTime = glfwGetTime();
+    double currentTime = glfwGetTime();
 
-    if (!gameContinues)
+    if (!gameRunning)
     {
-        endGameTextBox->setText("Game Over! Press Z to start again.\nFastest lap: " + std::to_string(checkPointManager.getFastestLap()));
-        if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS) {
-            checkPointManager.reset();
-            endGameTextBox->setText("");
-
-			car->position = glm::vec3(0, 0, 10);
-			car->rotation = glm::vec3(0, 0, 0);
-            car->getComponent<CarPhysicsComponent>()->resetSteering();
-            car->getComponent<SteeringComponent>()->angle = 0;
-
-            lastTime = glfwGetTime();
-        }
-
+        handleCountdown(currentTime, lastFrameTime);
         return;
     }
 
-    // Deze logica niet!
-    double currentTime = glfwGetTime();
-    float elapsedTime = static_cast<float>(currentTime - lastTime);
-    lastTime = currentTime;
+    float elapsedTime = static_cast<float>(currentTime - lastFrameTime);
+    lastFrameTime = currentTime;
+
+    if (!checkPointManager.update(car->position, messageTextBox, timeTextBox, window))
+    {
+        startAndEndGameTextBox->setText("Game Over! Press Z to start again.\nFastest lap: " +
+            std::to_string(checkPointManager.getFastestLap()));
+        if (glfwGetKey(window, GLFW_KEY_Z) == GLFW_PRESS)
+        {
+            resetGame();
+            lastFrameTime = glfwGetTime();
+        }
+        return;
+    }
 
     scene.update(elapsedTime);
 }
@@ -257,3 +260,47 @@ void draw()
         textBox->draw();
     }
 }
+
+void resetGame()
+{
+    checkPointManager.reset();
+
+    car->position = glm::vec3(0, 0, 10);
+    car->rotation = glm::vec3(0, 0, 0);
+    car->getComponent<CarPhysicsComponent>()->resetSteering();
+    car->getComponent<SteeringComponent>()->angle = 0;
+
+    startAndEndGameTextBox->setText("");
+    countdownStartTime = -1.0;
+    gameRunning = false;
+    lastFrameTime = glfwGetTime();
+}
+
+void handleCountdown(double currentTime, double& lastFrameTime)
+{
+    if (countdownStartTime < 0.0)
+    {
+        countdownStartTime = currentTime;
+
+        // Teken het eerste frame van de scene
+        float elapsedTime = static_cast<float>(currentTime - lastFrameTime);
+        lastFrameTime = currentTime;
+        scene.update(elapsedTime);
+    }
+
+    int secondsLeft = countdownSeconds - static_cast<int>(currentTime - countdownStartTime);
+
+    if (secondsLeft > 0)
+    {
+        startAndEndGameTextBox->setText("Starting in " + std::to_string(secondsLeft) + "...");
+    }
+    else
+    {
+        startAndEndGameTextBox->setText("");
+        gameRunning = true;
+
+        // Reset lastFrameTime zodat het spel straks een correcte elapsedTime heeft
+        lastFrameTime = glfwGetTime();
+    }
+}
+
