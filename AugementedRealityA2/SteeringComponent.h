@@ -12,6 +12,5 @@ public:
 
 	float height = .5f;
 	float angle = 0;
-
 };
 

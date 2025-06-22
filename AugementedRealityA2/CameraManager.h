@@ -2,7 +2,8 @@
 #include "CameraComponent.h"
 #include "GameObject.h"
 
-class CameraManager {
+class CameraManager 
+{
     
     std::shared_ptr<GameObject> activeCameraObject = nullptr;
 

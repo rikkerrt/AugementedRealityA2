@@ -18,14 +18,17 @@ void TextBox::calculateSizeFromText()
     float x = 0, y = 0;
     stbtt_aligned_quad q;
 
-    for (char c : text) {
-        if (c == '\n') {
+    for (char c : text) 
+    {
+        if (c == '\n') 
+        {
             maxWidth = std::max(maxWidth, x);
             x = 0;
             y += 35;
             continue;
         }
-        if (c >= 32 && c < 128) {
+        if (c >= 32 && c < 128) 
+        {
             stbtt_GetBakedQuad(cdata, 512, 512, c - 32, &x, &y, &q, 1);
         }
     }
@@ -52,7 +55,8 @@ void TextBox::loadFont(const std::string& fontPath)
     glGenTextures(1, &textTexture);
     glBindTexture(GL_TEXTURE_2D, textTexture);
     unsigned char* rgba_bitmap = new unsigned char[512 * 512 * 4];
-    for (int i = 0; i < 512 * 512; i++) {
+    for (int i = 0; i < 512 * 512; i++) 
+    {
         rgba_bitmap[i * 4 + 0] = 255; // R
         rgba_bitmap[i * 4 + 1] = 255; // G
         rgba_bitmap[i * 4 + 2] = 255; // B
@@ -71,7 +75,7 @@ void TextBox::loadFont(const std::string& fontPath)
 void TextBox::draw()
 {
     if (text.empty()) 
-{
+    {
         return;
     }
     glDisable(GL_DEPTH_TEST);
@@ -98,13 +102,17 @@ void TextBox::draw()
     stbtt_aligned_quad q;
 
     tigl::begin(GL_QUADS);
-    for (char c : text) {
-        if (c == '\n') {
+    for (char c : text) 
+    {
+        if (c == '\n') 
+        {
             x = position.x + 10;
             y += 30;
             continue;
         }
-        if (c >= 32 && c < 128) {
+
+        if (c >= 32 && c < 128) 
+        {
             stbtt_GetBakedQuad(cdata, 512, 512, c - 32, &x, &y, &q, 1);
             tigl::addVertex(Vertex::PT(glm::vec3(q.x0, q.y0, 0), glm::vec2(q.s0, q.t0)));
             tigl::addVertex(Vertex::PT(glm::vec3(q.x1, q.y0, 0), glm::vec2(q.s1, q.t0)));
@@ -116,7 +124,8 @@ void TextBox::draw()
     glEnable(GL_DEPTH_TEST);
 }
 
-void TextBox::setText(const std::string& newText) {
+void TextBox::setText(const std::string& newText) 
+{
 	text = newText;
     calculateSizeFromText();
 }

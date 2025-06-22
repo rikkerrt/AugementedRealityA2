@@ -17,6 +17,44 @@
     <ClCompile Include="tigl.cpp" />
     <ClCompile Include="VisionCalibration.cpp" />
     <ClCompile Include="VisionSteeringComponent.cpp" />
-    <ClCompile Include="io_manager.cpp" />
+    <ClCompile Include="IOManager.cpp" />
+    <ClCompile Include="CameraComponent.cpp" />
+    <ClCompile Include="CameraManager.cpp" />
+    <ClCompile Include="PerspectiveCameraComponent.cpp" />
+    <ClCompile Include="ChildComponent.cpp" />
+    <ClCompile Include="CheckpointManager.cpp" />
+    <ClCompile Include="MapLoader.cpp" />
+    <ClCompile Include="stb_truetype_impl.cpp" />
+    <ClCompile Include="PhysicsComponent.cpp" />
+    <ClCompile Include="RoadComponent.cpp" />
+    <ClCompile Include="SceneObject.cpp" />
   </ItemGroup>
- </Project>
+  <ItemGroup>
+    <ClInclude Include="CameraComponent.h" />
+    <ClInclude Include="CameraManager.h" />
+    <ClInclude Include="PerspectiveCameraComponent.h" />
+    <ClInclude Include="CarPhysicsComponent.h" />
+    <ClInclude Include="CheckPointManager.h" />
+    <ClInclude Include="ChildComponent.h" />
+    <ClInclude Include="Component.h" />
+    <ClInclude Include="CubeComponent.h" />
+    <ClInclude Include="DrawComponent.h" />
+    <ClInclude Include="FpsCam.h" />
+    <ClInclude Include="GameObject.h" />
+    <ClInclude Include="IOManager.h" />
+    <ClInclude Include="KeyboardSteeringComponent.h" />
+    <ClInclude Include="MapLoader.h" />
+    <ClInclude Include="ModelComponent.h" />
+    <ClInclude Include="ObjModel.h" />
+    <ClInclude Include="PhysicsComponent.h" />
+    <ClInclude Include="RoadComponent.h" />
+    <ClInclude Include="SceneObject.h" />
+    <ClInclude Include="RaceData.h" />
+    <ClInclude Include="TextBox.h" />
+    <ClInclude Include="SteeringComponent.h" />
+    <ClInclude Include="Texture.h" />
+    <ClInclude Include="tigl.h" />
+    <ClInclude Include="VisionCalibration.h" />
+    <ClInclude Include="VisionSteeringComponent.h" />
+  </ItemGroup>
+</Project>

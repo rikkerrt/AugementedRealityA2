@@ -173,7 +173,7 @@
     <ClCompile Include="DrawComponent.cpp" />
     <ClCompile Include="FpsCam.cpp" />
     <ClCompile Include="GameObject.cpp" />
-    <ClCompile Include="io_manager.cpp" />
+    <ClCompile Include="IOManager.cpp" />
     <ClCompile Include="KeyboardSteeringComponent.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapLoader.cpp" />
@@ -202,7 +202,7 @@
     <ClInclude Include="DrawComponent.h" />
     <ClInclude Include="FpsCam.h" />
     <ClInclude Include="GameObject.h" />
-    <ClInclude Include="io_manager.h" />
+    <ClInclude Include="IOManager.h" />
     <ClInclude Include="KeyboardSteeringComponent.h" />
     <ClInclude Include="MapLoader.h" />
     <ClInclude Include="ModelComponent.h" />
@@ -210,7 +210,7 @@
     <ClInclude Include="PhysicsComponent.h" />
     <ClInclude Include="RoadComponent.h" />
     <ClInclude Include="SceneObject.h" />
-    <ClInclude Include="race_data.h" />
+    <ClInclude Include="RaceData.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="SteeringComponent.h" />
     <ClInclude Include="Texture.h" />

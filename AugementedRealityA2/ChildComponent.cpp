@@ -14,7 +14,6 @@ ChildComponent::ChildComponent(std::shared_ptr<GameObject> parent, vec3 postionO
 
 ChildComponent::~ChildComponent()
 {
-
 }
 
 void ChildComponent::update(float elapsedTime)

@@ -7,7 +7,7 @@
 #include <GLFW/glfw3.h>
 #include "tigl.h"
 #include "ObjModel.h"
-#include "io_manager.h"
+#include "IOManager.h"
 #include "CheckPointManager.h"
 #include "GameObject.h"
 #include "SceneObject.h"

@@ -14,7 +14,6 @@ PerspectiveCameraComponent::PerspectiveCameraComponent(float fov, float nearClip
 
 PerspectiveCameraComponent::~PerspectiveCameraComponent()
 {
-
 }
 
 glm::mat4 PerspectiveCameraComponent::getViewMatrix() {

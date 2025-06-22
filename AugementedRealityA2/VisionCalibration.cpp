@@ -13,7 +13,8 @@ using json = nlohmann::json;
 /// <summary>
 /// Constructor
 /// </summary>
-VisionCalibration::VisionCalibration() {
+VisionCalibration::VisionCalibration() 
+{
 
 }
 
@@ -21,7 +22,8 @@ VisionCalibration::VisionCalibration() {
 /// Add a color that will be included in the calibration
 /// </summary>
 /// <param name="name">Name of the color to be added</param>
-void VisionCalibration::addColor(string name) {
+void VisionCalibration::addColor(string name) 
+{
 	HSVRange range;
 	range.name = name;
 	colors.push_back(range);
@@ -31,7 +33,8 @@ void VisionCalibration::addColor(string name) {
 /// Open a window that waits a few seconds to take a photo and saves this photo
 /// </summary>
 /// <param name="videoCapture">videocapture from which the photo will be taken</param>
-void VisionCalibration::capurePhoto(VideoCapture videoCapture) {
+void VisionCalibration::capurePhoto(VideoCapture videoCapture) 
+{
 	auto startTime = steady_clock::now();
 	int countDown = 5;
 
@@ -65,7 +68,8 @@ void VisionCalibration::capurePhoto(VideoCapture videoCapture) {
 /// <summary>
 /// Open a window with sliders for each added color to calibrate the color ranges 
 /// </summary>
-void VisionCalibration::calibrate() {
+void VisionCalibration::calibrate() 
+{
 
 	Mat captureHSV;
 	cvtColor(capture, captureHSV, COLOR_BGR2HSV);
@@ -122,7 +126,8 @@ void VisionCalibration::calibrate() {
 /// Save the current calibration settings into .json
 /// </summary>
 /// <param name="filename">Name of the file</param>
-void VisionCalibration::save(string filename) {
+void VisionCalibration::save(string filename) 
+{
 	
 	// Open/create the file
 	ofstream file;
@@ -165,7 +170,8 @@ void VisionCalibration::save(string filename) {
 /// Load in calibration settings based on a .json file
 /// </summary>
 /// <param name="filename">Name of the file</param>
-void VisionCalibration::load(string filename) {
+void VisionCalibration::load(string filename) 
+{
 	std::vector<HSVRange> ranges;
 
 	try 
@@ -204,6 +210,7 @@ void VisionCalibration::load(string filename) {
 /// Retreive the calibrated colors
 /// </summary>
 /// <returns>List of color ranges for each of the calibrated colors</returns>
-vector<HSVRange> VisionCalibration::getColors() {
+vector<HSVRange> VisionCalibration::getColors() 
+{
 	return colors;
 }

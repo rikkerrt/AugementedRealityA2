@@ -6,7 +6,8 @@
 using namespace std;
 using namespace cv;
 
-struct HSVRange {
+struct HSVRange 
+{
     string name;
     int hueMin = 0, saturationMin = 0, valueMin = 0;
     int hueMax = 179, saturationMax = 255, valueMax = 255;
@@ -17,6 +18,7 @@ class VisionCalibration
 private:
     vector<HSVRange> colors;
     Mat capture;
+
 public:
     /// <summary>
     /// Constructor

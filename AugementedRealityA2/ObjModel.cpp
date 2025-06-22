@@ -181,13 +181,9 @@ ObjModel::ObjModel(const std::string &fileName)
 	buildBoundingBox();
 }
 
-
 ObjModel::~ObjModel(void)
 {
 }
-
-
-
 
 void ObjModel::draw()
 {
@@ -294,10 +290,10 @@ void ObjModel::loadMaterialFile( const std::string &fileName, const std::string 
 
 	if(currentMaterial != NULL)
 		materials.push_back(currentMaterial);
-
 }
 
-void ObjModel::buildBoundingBox() {
+void ObjModel::buildBoundingBox() 
+{
 	for (const auto& v : vertices)
 	{
 		rect->br.x = std::min(rect->br.x, v.x);

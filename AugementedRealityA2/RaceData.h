@@ -4,7 +4,8 @@
 #include <string>
 #include <vector>
 
-struct RaceData {
+struct RaceData 
+{
     int id;
     std::string date;
     double racetime;

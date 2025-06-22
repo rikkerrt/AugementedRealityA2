@@ -45,7 +45,8 @@ void VisionSteeringComponent::update(float elapsedTime)
 /// Draws debug visuals and updates steering values.
 /// </summary>
 // Main function
-void VisionSteeringComponent::detectAndDrawLine() {
+void VisionSteeringComponent::detectAndDrawLine() 
+{
     Mat webCamCapture, imgHSV;
     vector<Point> points;
 
@@ -59,7 +60,8 @@ void VisionSteeringComponent::detectAndDrawLine() {
 
     processColors(imgHSV, webCamCapture, points, minDev, maxDev);
 
-    if (points.size() > 1) {
+    if (points.size() > 1) 
+    {
         Point origin((points[0].x + points[1].x) / 2, (points[0].y + points[1].y) / 2);
         rotatePoint(points[0], origin, angleOffset);
         rotatePoint(points[1], origin, angleOffset);
@@ -71,7 +73,8 @@ void VisionSteeringComponent::detectAndDrawLine() {
         this->height =height;
     }
 
-    if (debugMode) {
+    if (debugMode) 
+    {
         cv::imshow("Steering", webCamCapture);
         cv::waitKey(1);
     }
@@ -91,9 +94,10 @@ void VisionSteeringComponent::processColors(
     Mat& outputImage,
     vector<Point>& points,
     float minDev,
-    float maxDev
-) {
-    for (const HSVRange& color : colors) {
+    float maxDev) 
+{
+    for (const HSVRange& color : colors) 
+    {
         Mat mask;
         Scalar lower(color.hueMin * minDev, color.saturationMin * minDev, color.valueMin * minDev);
         Scalar upper(color.hueMax * maxDev, color.saturationMax * maxDev, color.valueMax * maxDev);
@@ -102,7 +106,8 @@ void VisionSteeringComponent::processColors(
         vector<Point> validContour;
         findValidContour(mask, validContour);
 
-        if (!validContour.empty()) {
+        if (!validContour.empty()) 
+        {
             drawContours(outputImage, vector<vector<Point>>{validContour}, 0, Scalar(255, 0, 0), 2);
             Rect boundingBox = boundingRect(validContour);
             Point center(boundingBox.x + boundingBox.width / 2, boundingBox.y + boundingBox.height / 2);
@@ -121,13 +126,16 @@ void VisionSteeringComponent::findValidContour(const Mat& mask, vector<Point>& v
     vector<vector<Point>> contours;
     findContours(mask, contours, RETR_LIST, CHAIN_APPROX_NONE);
 
-    for (const vector<Point>& contour : contours) {
+    for (const vector<Point>& contour : contours) 
+    {
         double area = contourArea(contour);
-        if (area > minimalMarkerSize && contour.size() > 10) {
+        if (area > minimalMarkerSize && contour.size() > 10) 
+        {
             Rect boundingBox = boundingRect(contour);
             float ellipseArea = (CV_PI * boundingBox.width * boundingBox.height) / 4.0;
             float ratio = ellipseArea / area;
-            if (ratio > 1 - roundnessDeviation / 200 && ratio < 1 + roundnessDeviation / 200) {
+            if (ratio > 1 - roundnessDeviation / 200 && ratio < 1 + roundnessDeviation / 200) 
+            {
                 validContour = contour;
             }
         }
@@ -182,7 +190,8 @@ void VisionSteeringComponent::computeAngleAndHeight(const Point& point1, const P
 /// <param name="point2">Second point</param>
 /// <param name="angle">Steering angle to annotate</param>
 /// <param name="height">Normalized height to annotate</param>
-void VisionSteeringComponent::drawResults(Mat& image, const Point& point1, const Point& point2, float angle, float height) {
+void VisionSteeringComponent::drawResults(Mat& image, const Point& point1, const Point& point2, float angle, float height) 
+{
     line(image, point1, point2, Scalar(0, 0, 0), 3, LINE_AA);
 
     string angleText = "Angle: " + to_string(angle) + " degrees";

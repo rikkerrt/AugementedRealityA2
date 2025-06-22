@@ -7,12 +7,14 @@
 
 #include "TextBox.h"
 
-enum class ZoneType {
+enum class ZoneType 
+{
     Start,
     Checkpoint
 };
 
-struct CheckPoint {
+struct CheckPoint 
+{
     glm::vec3 min;
     glm::vec3 max;
     ZoneType type;
@@ -20,7 +22,8 @@ struct CheckPoint {
 	glm::vec3 rotation = glm::vec3(0, 0, 0);
 };
 
-class CheckPointManager {
+class CheckPointManager 
+{
 public:
     void init(std::vector<CheckPoint>& zones, std::string filename, int maxLaps);
     bool update(const glm::vec3& position, std::shared_ptr<TextBox> messageBox,

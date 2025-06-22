@@ -12,7 +12,6 @@ FpsCam::FpsCam(GLFWwindow* window, glm::vec3 position)
 	this->position = position;
 }
 
-
 glm::mat4 FpsCam::getMatrix()
 {
 	glm::mat4 ret(1.0f);

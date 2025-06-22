@@ -3,7 +3,7 @@
 
 #include <string>
 #include <vector>
-#include "race_data.h"
+#include "RaceData.h"
 
 std::vector<RaceData> readFile(const std::string& filename);
 void writeFile(const std::string& filename, double lapTime);

@@ -5,7 +5,6 @@
 class RoadComponent : public Component
 {
 
-
 public:
 	struct Rect {
 		glm::vec2 tl, tr, br, bl;

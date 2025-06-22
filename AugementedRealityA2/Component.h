@@ -6,6 +6,7 @@ class Component
 {
 protected:
 	GameObject* gameObject;
+
 public:
 	Component();
 	~Component();

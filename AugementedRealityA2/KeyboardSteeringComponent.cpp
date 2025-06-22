@@ -21,7 +21,6 @@ void KeyboardSteeringComponent::update(float elapsedTime)
 	{
 		float height = this->height + (elapsedTime * velocity);
 		this->height = height > 1 ? 1 : height;
-
 	}
 
 	if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS)
@@ -39,8 +38,4 @@ void KeyboardSteeringComponent::update(float elapsedTime)
 	{
 		this->angle -= elapsedTime * angularVelocity;
 	}
-
-
-	/*std::cout << "Height (keyboard): " << height << std::endl;
-	std::cout << "Angle (keyboard): " << angle << std::endl;*/
 }

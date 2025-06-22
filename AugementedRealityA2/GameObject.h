@@ -15,6 +15,7 @@ class GameObject
 {
 	std::shared_ptr<DrawComponent> drawComponent;
 	std::list<std::shared_ptr<Component>> components;
+
 public:
 	GameObject();
 	~GameObject();

@@ -28,7 +28,6 @@ std::list<std::shared_ptr<Component>> GameObject::getComponents()
 	return components;
 }
 
-
 void GameObject::draw(const glm::mat4& parentMatrix)
 {
 	if (!drawComponent)

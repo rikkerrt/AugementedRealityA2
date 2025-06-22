@@ -1,30 +1,35 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "race_data.h"
+#include "RaceData.h"
 
 std::string getCurrentDate();
 int getLastId(const std::string& filename);
 
-std::vector<RaceData> readFile(const std::string& filename) {
+std::vector<RaceData> readFile(const std::string& filename) 
+{
     std::vector<RaceData> raceList;
     std::ifstream infile(filename);
 
-    if (infile.is_open()) {
+    if (infile.is_open()) 
+    {
         RaceData race;
-        while (infile >> race.id >> race.date >> race.racetime) {
+        while (infile >> race.id >> race.date >> race.racetime) 
+        {
             raceList.push_back(race);
         }
         infile.close();
     }
-    else {
+    else 
+    {
         std::cerr << "Kan bestand niet openen: " << filename << std::endl;
     }
 
     return raceList;
 }
 
-void writeFile(const std::string& filename, double lapTime) {
+void writeFile(const std::string& filename, double lapTime) 
+{
     std::ofstream outfile(filename, std::ios::app);
 
     if (outfile.is_open())
@@ -38,25 +43,30 @@ void writeFile(const std::string& filename, double lapTime) {
     }
 }
 
-int getLastId(const std::string& filename) {
+int getLastId(const std::string& filename) 
+{
     std::ifstream infile(filename);
     int lastId = 0;
 
-    if (infile.is_open()) {
+    if (infile.is_open()) 
+    {
         RaceData race;
-        while (infile >> race.id >> race.date >> race.racetime) {
+        while (infile >> race.id >> race.date >> race.racetime) 
+        {
             lastId = race.id;
         }
         infile.close();
     }
-    else {
+    else 
+    {
         std::cerr << "Kan bestand niet openen: " << filename << std::endl;
     }
 
     return lastId;
 }
 
-std::string getCurrentDate() {
+std::string getCurrentDate()
+{
     time_t now = time(0);
     struct tm localtm;
 

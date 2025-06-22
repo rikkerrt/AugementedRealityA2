@@ -19,7 +19,6 @@ void loadMap(SceneObject* scene)
 
 	buildTrackFromFile("models/Circuit/Circuitvolgorde.txt", scene);
 
-
     for (int i = 0; i < 25; ++i) {
         bool OnRoad = false;
         bool running = true;
@@ -57,8 +56,6 @@ void loadMap(SceneObject* scene)
 		prop->addComponent(std::make_shared<PhysicsComponent>(3.0f));
         scene->addGameObject(prop);
     }
-
-
 }
 
 void buildTrackFromFile(const std::string& filename, SceneObject* scene)

@@ -3,7 +3,7 @@
 #include <iomanip>
 #include <iostream>
 #include <sstream>
-#include "io_manager.h"
+#include "IOManager.h"
 
 void CheckPointManager::init(std::vector<CheckPoint>& checkPointZones, std::string fileName, int maxLaps)
 {

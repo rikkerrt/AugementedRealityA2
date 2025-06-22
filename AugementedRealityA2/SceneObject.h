@@ -10,7 +10,6 @@ class GameObject;
 
 class SceneObject
 {
-
 	std::list<std::shared_ptr<GameObject>> gameObjects;
 	double x = 0.0;
 	double y = 0.0;
@@ -30,6 +29,4 @@ public:
 	void update(float elapsedTime);
 	void draw(const glm::mat4& parentMatrix = glm::mat4(1.0f));
 	std::vector<CheckPoint> getCheckPoints();
-
-
 };

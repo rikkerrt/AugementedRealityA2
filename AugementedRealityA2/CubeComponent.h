@@ -3,13 +3,14 @@
 #include "DrawComponent.h"
 #include "tigl.h"
 
-using tigl::Vertex;
-
 #include <vector>
+
+using tigl::Vertex;
 
 class CubeComponent : public DrawComponent
 {
 	std::vector<Vertex> verts;
+
 public:
 	CubeComponent(float size);
 	~CubeComponent();

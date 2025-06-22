@@ -24,7 +24,6 @@ private:
     void computeAngleAndHeight(const cv::Point& point1, const cv::Point& point2, int frameHeight, float& angle, float& height);
     void drawResults(cv::Mat& image, const cv::Point& point1, const cv::Point& point2, float angle, float height);
 
-
 public:
 	VisionSteeringComponent(VideoCapture webCam, vector<HSVRange> colors);
 	~VisionSteeringComponent();
